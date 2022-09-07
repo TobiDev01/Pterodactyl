@@ -1,4 +1,4 @@
-# Pterodactyl Installer
+# Pterodactyl
 
 Install script:
 ```sh

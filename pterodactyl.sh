@@ -80,13 +80,13 @@ installPanel(){
     systemctl enable --now redis-server
     systemctl enable --now pteroq.service
     rm /etc/nginx/sites-enabled/default
-    apt update
-    apt install -y certbot
-    apt install -y python3-certbot-nginx
-    certbot certonly --nginx --redirect --no-eff-email --email "$email" -d "$FQDN"
-    curl -o /etc/nginx/conf.d/pterodactyl.conf $GitHub_Account/pterodactyl.conf
-    sed -i -e "s@<domain>@${FQDN}@g" /etc/nginx/conf.d/pterodactyl.conf
-    ln -s /etc/nginx/sites-available/pterodactyl.conf /etc/nginx/sites-enabled/pterodactyl-no_ssl.conf
+    #apt update
+    #apt install -y certbot
+    #apt install -y python3-certbot-nginx
+    #certbot certonly --nginx --redirect --no-eff-email --email "$email" -d "$FQDN"
+    curl -o /etc/nginx/conf.d/pterodactyl.conf $GitHub_Account/pterodactyl-no_ssl.conf
+    sed -i -e "s@<domain>@${FQDN}@g" /etc/nginx/sites-available/pterodactyl.conf
+    ln -s /etc/nginx/sites-available/pterodactyl.conf /etc/nginx/sites-enabled/pterodactyl.conf
     systemctl restart nginx
 }
 
@@ -228,7 +228,6 @@ if [ $choice == "2" ]
     rm /etc/nginx/sites-available/pterodactyl.conf
     rm /etc/nginx/sites-enabled/pterodactyl.conf
     ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
-    systemctl restart nginx
     systemctl stop wings
     rm -rf /var/lib/pterodactyl
     rm -rf /etc/pterodactyl
@@ -237,6 +236,7 @@ if [ $choice == "2" ]
     mysql -u root -e "DROP USER 'pterodactyl'@'127.0.0.1';"
     mysql -u root -e "DROP DATABASE panel;"
     mysql -u root -e "DROP USER 'pterodactyluser'@'127.0.0.1';"
+    systemctl restart nginx
     clear
     echo "* Panel uninstalled successfully"
 fi
