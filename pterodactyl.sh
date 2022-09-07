@@ -76,6 +76,7 @@ installPanel(){
         echo "* * * * * php /var/www/pterodactyl/artisan schedule:run >> /dev/null 2>&1"
     } | crontab -
 
+    rm /etc/systemd/system/pteroq.service
     curl -o /etc/systemd/system/pteroq.service $GitHub_Account/pteroq.service
     systemctl enable --now redis-server
     systemctl enable --now pteroq.service
@@ -84,10 +85,23 @@ installPanel(){
     #apt install -y certbot
     #apt install -y python3-certbot-nginx
     #certbot certonly --nginx --redirect --no-eff-email --email "$email" -d "$FQDN"
+    rm /etc/nginx/sites-available/pterodactyl.conf
+    rm /etc/nginx/sites-enabled/pterodactyl.conf
     curl -o /etc/nginx/sites-available/pterodactyl.conf $GitHub_Account/pterodactyl-no_ssl.conf
     sed -i -e "s@<domain>@${FQDN}@g" /etc/nginx/sites-available/pterodactyl.conf
     ln -s /etc/nginx/sites-available/pterodactyl.conf /etc/nginx/sites-enabled/pterodactyl.conf
     systemctl restart nginx
+    cd
+    curl -sSL https://get.docker.com/ | CHANNEL=stable bash
+    systemctl enable --now docker
+    rm /etc/default/grub
+    curl -o /etc/default/grub $GitHub_Account/grub
+    update-grub
+    mkdir -p /etc/pterodactyl
+    curl -L -o /usr/local/bin/wings "https://github.com/pterodactyl/wings/releases/latest/download/wings_linux_$([[ "$(uname -m)" == "x86_64" ]] && echo "amd64" || echo "arm64")"
+    chmod u+x /usr/local/bin/wings
+    rm /etc/systemd/system/wings.service
+    curl -o /etc/systemd/system/wings.service $GitHub_Account/wings.service
 }
 
 print_error() {
