@@ -192,7 +192,7 @@ summary() {
 
 echo "[0] Exit"
 echo "[1] Install panel"
-echo "[2] unInstall panel"
+echo "[2] uninstall panel"
 
 read -p "Please enter a number: " choice
 
