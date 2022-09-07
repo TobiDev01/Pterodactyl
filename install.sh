@@ -212,5 +212,6 @@ if [ $choice == "0" ]
 fi
 if [ $choice == "1" ]
     then
+    echo "Cya"
     exit
 fi
