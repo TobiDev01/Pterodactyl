@@ -247,6 +247,7 @@ if [ $choice == "2" ]
     rm -rf /etc/pterodactyl
     rm /usr/local/bin/wings
     rm /etc/systemd/system/wings.service
+    rm -rf /etc/apt/sources.list.d
     mysql -u root -e "DROP USER 'pterodactyl'@'127.0.0.1';"
     mysql -u root -e "DROP DATABASE panel;"
     mysql -u root -e "DROP USER 'pterodactyluser'@'127.0.0.1';"
