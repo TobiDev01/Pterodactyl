@@ -227,6 +227,7 @@ if [ $choice == "2" ]
     rm /etc/systemd/system/pteroq.service
     rm /etc/nginx/sites-available/pterodactyl.conf
     rm /etc/nginx/sites-enabled/pterodactyl.conf
+    ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
     systemctl stop wings
     rm -rf /var/lib/pterodactyl
     rm -rf /etc/pterodactyl
