@@ -171,7 +171,9 @@ summary() {
   echo ""
   echo "-- Database credentials"
   echo "* Name: panel"
-  echo "* User: pterodactyluser"
+  echo "* IPv4: 127.0.0.1"
+  echo "* Port: 3306"
+  echo "* User: pterodactyl"
   echo "* Password: $MYSQL_PASSWORD"
   echo ""
   echo "-- Panel credentials"
@@ -179,11 +181,11 @@ summary() {
   echo "* Username: $user_username"
   echo "* Password: $user_password"
   echo ""
-  echo "* Hostname/FQDN: $FQDN"
+  echo "* Domain: $FQDN"
   echo ""
 }
 
-echo "[0] Install Panel"
+echo "[0] Install panel"
 echo "[1] Exit"
 
 read -p "Please enter a number: " choice
