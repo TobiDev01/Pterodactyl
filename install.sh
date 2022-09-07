@@ -94,6 +94,23 @@ print_error() {
   echo -e "* ${COLOR_RED}ERROR${COLOR_NC}: $1"
   echo ""
 }
+required_input() {
+  local __resultvar=$1
+  local result=''
+
+  while [ -z "$result" ]; do
+    echo -n "* ${2}"
+    read -r result
+
+    if [ -z "${3}" ]; then
+      [ -z "$result" ] && result="${4}"
+    else
+      [ -z "$result" ] && print_error "${3}"
+    fi
+  done
+
+  eval "$__resultvar="'$result'""
+}
 valid_email() {
   [[ $1 =~ ${email_regex} ]]
 }
