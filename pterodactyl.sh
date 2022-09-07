@@ -216,7 +216,7 @@ if [ $choice == "1" ]
     [ -z "$FQDN" ] && print_error "FQDN cannot be empty"
     done
 
-    check_FQDN_SSL
+    #check_FQDN_SSL
     installPanel
     summary
 fi
