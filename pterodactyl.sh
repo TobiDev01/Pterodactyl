@@ -168,7 +168,7 @@ email_input() {
   eval "$__resultvar="'$result'""
 }
 summary() {
-  clear
+  #clear
   echo ""
   echo "-- Database credentials"
   echo "* Name: panel"
@@ -213,7 +213,7 @@ if [ $choice == "1" ]
     done
 
     check_FQDN_SSL
-#    installPanel
+    installPanel
     summary
 fi
 
