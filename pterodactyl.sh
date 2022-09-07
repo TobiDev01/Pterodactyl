@@ -42,7 +42,7 @@ installPanel(){
 
     php artisan p:environment:setup \
     --author="$email" \
-    --url="http://$FDQN" \
+    --url="https://$FQDN" \
     --timezone="America/New_York" \
     --cache="redis" \
     --session="redis" \
