@@ -84,7 +84,7 @@ installPanel(){
     #apt install -y certbot
     #apt install -y python3-certbot-nginx
     #certbot certonly --nginx --redirect --no-eff-email --email "$email" -d "$FQDN"
-    curl -o /etc/nginx/conf.d/pterodactyl.conf $GitHub_Account/pterodactyl-no_ssl.conf
+    curl -o /etc/nginx/sites-available/pterodactyl.conf $GitHub_Account/pterodactyl-no_ssl.conf
     sed -i -e "s@<domain>@${FQDN}@g" /etc/nginx/sites-available/pterodactyl.conf
     ln -s /etc/nginx/sites-available/pterodactyl.conf /etc/nginx/sites-enabled/pterodactyl.conf
     systemctl restart nginx
