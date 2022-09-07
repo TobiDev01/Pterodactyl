@@ -168,7 +168,7 @@ email_input() {
   eval "$__resultvar="'$result'""
 }
 summary() {
-
+  echo ""
   echo "-- Database credentials"
   echo "* Name: panel"
   echo "* User: pterodactyluser"
@@ -180,6 +180,7 @@ summary() {
   echo "* Password: $user_password"
   echo ""
   echo "* Hostname/FQDN: $FQDN"
+  echo ""
 }
 
 echo "[0] Install Panel"
@@ -189,15 +190,10 @@ read -p "Please enter a number: " choice
 if [ $choice == "0" ]
     then
 
-    rand_pw=$(
-        tr -dc 'A-Za-z0-9!"#$%&()*+,-./:;<=>?@[\]^_`{|}~' </dev/urandom | head -c 64
-        echo
-    )
-
-    password_input MYSQL_PASSWORD "Password (press enter to use randomly generated password): " "MySQL password cannot be empty" "$rand_pw"
-    email_input email "Provide the email address: " "Email cannot be empty or invalid"
-    required_input user_username "Provide username: " "Username cannot be empty"
-    password_input user_password "Provide password: " "Password cannot be empty"
+    password_input MYSQL_PASSWORD "Provide password for database: " "MySQL password cannot be empty"
+    email_input email "Provide email address for panel: " "Email cannot be empty or invalid"
+    required_input user_username "Provide username for panel: " "Username cannot be empty"
+    password_input user_password "Provide password for panel: " "Password cannot be empty"
 
     while [ -z "$FQDN" ]; do
     echo -n "* Set the FQDN of this panel (panel.example.com): "
