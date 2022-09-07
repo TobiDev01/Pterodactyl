@@ -86,6 +86,14 @@ installPanel(){
     sudo systemctl restart nginx
 }
 
+print_error() {
+  COLOR_RED='\033[0;31m'
+  COLOR_NC='\033[0m'
+
+  echo ""
+  echo -e "* ${COLOR_RED}ERROR${COLOR_NC}: $1"
+  echo ""
+}
 valid_email() {
   [[ $1 =~ ${email_regex} ]]
 }
