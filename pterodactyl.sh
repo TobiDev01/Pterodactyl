@@ -5,7 +5,7 @@ fi
 
 clear
 
-GitHub_Account="https://raw.githubusercontent.com/TobiDev01/Pterodactyl"
+GitHub_Account="https://raw.githubusercontent.com/TobiDev01/Pterodactyl/src"
 FQDN=""
 MYSQL_PASSWORD=""
 email=""
