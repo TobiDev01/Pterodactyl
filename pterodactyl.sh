@@ -5,7 +5,7 @@ fi
 
 clear
 
-GitHub_Account="https://raw.githubusercontent.com/TobiDev01/PterodactylInstaller"
+GitHub_Account="https://raw.githubusercontent.com/TobiDev01/Pterodactyl"
 FQDN=""
 MYSQL_PASSWORD=""
 email=""
@@ -204,9 +204,8 @@ if [ $choice == "0" ]
     done
 
     check_FQDN_SSL
-    summary
-
 #    installPanel
+    summary
 fi
 if [ $choice == "1" ]
     then
