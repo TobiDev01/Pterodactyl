@@ -175,7 +175,7 @@ summary() {
   echo "* Password: $MYSQL_PASSWORD"
   echo ""
   echo "-- Panel credentials"
-  echo "* Email: $user_email"
+  echo "* Email: $email"
   echo "* Username: $user_username"
   echo "* Password: $user_password"
   echo ""
