@@ -168,6 +168,7 @@ email_input() {
   eval "$__resultvar="'$result'""
 }
 summary() {
+  clear
   echo ""
   echo "-- Database credentials"
   echo "* Name: panel"
@@ -185,11 +186,19 @@ summary() {
   echo ""
 }
 
-echo "[0] Install panel"
-echo "[1] Exit"
+echo "[0] Exit"
+echo "[1] Install panel"
+echo "[2] unInstall panel"
 
 read -p "Please enter a number: " choice
+
 if [ $choice == "0" ]
+    then
+    echo "Cya"
+    exit
+fi
+
+if [ $choice == "1" ]
     then
 
     password_input MYSQL_PASSWORD "Provide password for database: " "MySQL password cannot be empty"
@@ -207,8 +216,21 @@ if [ $choice == "0" ]
 #    installPanel
     summary
 fi
-if [ $choice == "1" ]
+
+if [ $choice == "2" ]
     then
-    echo "Cya"
-    exit
+    rm -rf /var/www/pterodactyl
+    rm /etc/systemd/system/pteroq.service
+    rm /etc/nginx/sites-available/pterodactyl.conf
+    rm /etc/nginx/sites-enabled/pterodactyl.conf
+    systemctl stop wings
+    rm -rf /var/lib/pterodactyl
+    rm -rf /etc/pterodactyl
+    rm /usr/local/bin/wings
+    rm /etc/systemd/system/wings.service
+    mysql -u root -e "DROP USER 'pterodactyl'@'127.0.0.1';"
+    mysql -u root -e "DROP DATABASE panel;"
+    mysql -u root -e "DROP USER 'pterodactyluser'@'127.0.0.1';"
+    clear
+    echo "* Panel uninstalled successfully"
 fi
