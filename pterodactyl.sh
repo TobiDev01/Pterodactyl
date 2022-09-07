@@ -77,13 +77,17 @@ installPanel(){
     } | crontab -
 
     curl -o /etc/systemd/system/pteroq.service $GitHub_Account/pteroq.service
-    sudo systemctl enable --now redis-server
-    sudo systemctl enable --now pteroq.service
+    systemctl enable --now redis-server
+    systemctl enable --now pteroq.service
     rm /etc/nginx/sites-enabled/default
+    apt update
+    apt install -y certbot
+    apt install -y python3-certbot-nginx
+    certbot certonly --nginx --redirect --no-eff-email --email "$email" -d "$FQDN"
     curl -o /etc/nginx/conf.d/pterodactyl.conf $GitHub_Account/pterodactyl.conf
     sed -i -e "s@<domain>@${FQDN}@g" /etc/nginx/conf.d/pterodactyl.conf
-    sudo ln -s /etc/nginx/sites-available/pterodactyl.conf /etc/nginx/sites-enabled/pterodactyl.conf
-    sudo systemctl restart nginx
+    ln -s /etc/nginx/sites-available/pterodactyl.conf /etc/nginx/sites-enabled/pterodactyl.conf
+    systemctl restart nginx
 }
 
 print_error() {
