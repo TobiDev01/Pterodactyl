@@ -44,7 +44,7 @@ installPanel(){
 
     php artisan p:environment:setup \
     --author="$email" \
-    --url="http://$FQDN" \
+    --url="https://$FQDN" \
     --timezone="America/New_York" \
     --cache="redis" \
     --session="redis" \
@@ -89,7 +89,7 @@ installPanel(){
     #certbot certonly --nginx --redirect --no-eff-email --email "$email" -d "$FQDN"
     rm /etc/nginx/sites-available/pterodactyl.conf
     rm /etc/nginx/sites-enabled/pterodactyl.conf
-    curl -o /etc/nginx/sites-available/pterodactyl.conf $GitHub_Account/pterodactyl-no_ssl.conf
+    curl -o /etc/nginx/sites-available/pterodactyl.conf $GitHub_Account/pterodactyl.conf
     sed -i -e "s@<domain>@${FQDN}@g" /etc/nginx/sites-available/pterodactyl.conf
     ln -s /etc/nginx/sites-available/pterodactyl.conf /etc/nginx/sites-enabled/pterodactyl.conf
     systemctl restart nginx
