@@ -1,5 +1,7 @@
 if (( $EUID != 0 )); then
+    echo ""
     echo "Please run as root"
+    echo ""
     exit
 fi
 
@@ -204,12 +206,14 @@ summary() {
   echo ""
 }
 
+echo ""
 echo "[0] Exit"
 echo "[1] Install panel"
 echo "[2] uninstall panel"
 echo "[3] Install theme"
-
+echo ""
 read -p "Please enter a number: " choice
+echo ""
 
 if [ $choice == "0" ]
     then
