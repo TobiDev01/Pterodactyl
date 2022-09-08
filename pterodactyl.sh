@@ -259,5 +259,6 @@ if [ $choice == "2" ]
 fi
 
 if [ $choice == "3"]
+    then
     bash <(curl https://raw.githubusercontent.com/Angelillo15/MinecraftPurpleTheme/main/install.sh)
 fi
