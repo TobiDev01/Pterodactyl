@@ -236,14 +236,8 @@ echo ""
 read -p "Please enter a number: " choice
 echo ""
 
-if [ $choice == "" ]
-    then
-    required_input choice "Please enter a number: "
-fi
-
 if [ $choice == "0" ]
     then
-    echo $choice
     echo -e "\033[0;96mCya\033[0m"
     exit
 fi
