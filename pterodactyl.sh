@@ -9,7 +9,10 @@ clear
 
 GitHub_Account="https://raw.githubusercontent.com/TobiDev01/Pterodactyl/main/src"
 FQDN=""
+app_url="http://$FQDN"
 MYSQL_PASSWORD=""
+SSL_AVAILABLE=false
+Pterodactyl_conf="pterodactyl-no_ssl.conf"
 email=""
 user_username=""
 user_password=""
@@ -35,16 +38,31 @@ installPanel(){
     mysql -u root -e "GRANT ALL PRIVILEGES ON panel.* TO 'pterodactyl'@'127.0.0.1' WITH GRANT OPTION;"
     mysql -u root -e "CREATE USER 'pterodactyluser'@'127.0.0.1' IDENTIFIED BY '${MYSQL_PASSWORD}';"
     mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'pterodactyluser'@'127.0.0.1' WITH GRANT OPTION;"
+    mysql -u root -e "CREATE USER 'pterodactyluser'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';"
+    mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'pterodactyluser'@'%' WITH GRANT OPTION;"
+    mysql -u root -e "flush privileges;"
 
     rm /etc/mysql/my.cnf
     curl -o /etc/mysql/my.cnf $GitHub_Account/my.cnf
+    rm /etc/mysql/mariadb.conf.d/50-server.cnf
+    curl -o /etc/mysql/mariadb.conf.d/50-server.cnf $GitHub_Account/50-server.cnf
     cp .env.example .env
     COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --optimize-autoloader
     php artisan key:generate --force
 
+    if [ "$SSL_AVAILABLE" == true ]
+      then
+      app_url="https://$FQDN"
+      Pterodactyl_conf="pterodactyl.conf"
+      apt update
+      apt install -y certbot
+      apt install -y python3-certbot-nginx
+      certbot certonly --nginx --redirect --no-eff-email --email "$email" -d "$FQDN"
+    fi
+
     php artisan p:environment:setup \
     --author="$email" \
-    --url="https://$FQDN" \
+    --url="$app_url" \
     --timezone="America/New_York" \
     --cache="redis" \
     --session="redis" \
@@ -83,13 +101,9 @@ installPanel(){
     systemctl enable --now redis-server
     systemctl enable --now pteroq.service
     rm /etc/nginx/sites-enabled/default
-    #apt update
-    #apt install -y certbot
-    #apt install -y python3-certbot-nginx
-    #certbot certonly --nginx --redirect --no-eff-email --email "$email" -d "$FQDN"
     rm /etc/nginx/sites-available/pterodactyl.conf
     rm /etc/nginx/sites-enabled/pterodactyl.conf
-    curl -o /etc/nginx/sites-available/pterodactyl.conf $GitHub_Account/pterodactyl.conf
+    curl -o /etc/nginx/sites-available/pterodactyl.conf $GitHub_Account/$Pterodactyl_conf
     sed -i -e "s@<domain>@${FQDN}@g" /etc/nginx/sites-available/pterodactyl.conf
     ln -s /etc/nginx/sites-available/pterodactyl.conf /etc/nginx/sites-enabled/pterodactyl.conf
     systemctl restart nginx
@@ -235,7 +249,7 @@ if [ $choice == "1" ]
     [ -z "$FQDN" ] && print_error "FQDN cannot be empty"
     done
 
-    #check_FQDN_SSL
+    check_FQDN_SSL
     installPanel
     summary
 fi
@@ -255,6 +269,7 @@ if [ $choice == "2" ]
     mysql -u root -e "DROP USER 'pterodactyl'@'127.0.0.1';"
     mysql -u root -e "DROP DATABASE panel;"
     mysql -u root -e "DROP USER 'pterodactyluser'@'127.0.0.1';"
+    mysql -u root -e "DROP USER 'pterodactyluser'@'%';"
     systemctl restart nginx
     #clear
     echo "* Panel uninstalled successfully"
