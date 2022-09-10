@@ -236,7 +236,10 @@ echo ""
 read -p "Please enter a number: " choice
 echo ""
 
-#required_input choice "Please enter a number"
+if [ $choice == "" ]
+    then
+    required_input choice "Please enter a number: "
+fi
 
 if [ $choice == "0" ]
     then
