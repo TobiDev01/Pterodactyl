@@ -279,7 +279,6 @@ fi
 if [ $choice == "3"]
     then
     bash <(curl https://raw.githubusercontent.com/Angelillo15/MinecraftPurpleTheme/main/install.sh)
-    done
 fi
 
 if [ $choice == "4"]
@@ -288,5 +287,4 @@ if [ $choice == "4"]
     endColor="\033[0m"
     clear
     echo -e "${startColor}Test${endColor}"
-    done
 fi
