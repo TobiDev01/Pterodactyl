@@ -297,10 +297,8 @@ if [ $choice == "3" ]
   cd /var/www/pterodactyl
   rm /var/www/pterodactyl/resources/scripts/theme-2.css
   rm /var/www/pterodactyl/resources/scripts/index.tsx
-  rm /var/www/pterodactyl/package.json
   curl -o /var/www/pterodactyl/resources/scripts/index.tsx $GitHub_Account/index.tsx
   curl -o /var/www/pterodactyl/resources/scripts/theme.css $GitHub_Account/theme.css
-  curl -o /var/www/pterodactyl/package.json $GitHub_Account/package.json
   apt remove -y nodejs
   curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
   apt update
