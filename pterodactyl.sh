@@ -30,6 +30,7 @@ installPanel() {
     cd /var/www/pterodactyl
     curl -Lo panel.tar.gz https://github.com/pterodactyl/panel/releases/latest/download/panel.tar.gz
     tar -xzvf panel.tar.gz
+    rm /var/www/pterodactyl/panel.tar.gz
     chmod -R 755 storage/* bootstrap/cache/
 
     mysql -u root -e "CREATE USER 'pterodactyl'@'127.0.0.1' IDENTIFIED BY '${MYSQL_PASSWORD}';"
