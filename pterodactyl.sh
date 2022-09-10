@@ -211,19 +211,19 @@ email_input() {
 summary() {
   #clear
   echo ""
-  echo "-- Database credentials"
+  echo "-- \033[0;97mDatabase credentials:\033[0m"
   echo "* Name: panel"
   echo "* IPv4: 127.0.0.1"
   echo "* Port: 3306"
   echo "* User: pterodactyl"
   echo "* Password: $MYSQL_PASSWORD"
   echo ""
-  echo "-- Panel credentials"
+  echo "-- \033[1;31mPanel credentials:\033[0m"
   echo "* Email: $email"
   echo "* Username: $user_username"
   echo "* Password: $user_password"
   echo ""
-  echo "* Domain/IPv4: $FQDN"
+  echo "-- \033[0;30mDomain/IPv4:\033[0m $FQDN"
   echo ""
 }
 
@@ -258,7 +258,7 @@ if [ $choice == "1" ]
     done
 
     check_FQDN_SSL
-    installPanel
+    #installPanel
     summary
 fi
 
