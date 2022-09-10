@@ -300,12 +300,12 @@ if [ $choice == "3"]
   curl -o /var/www/pterodactyl/resources/scripts/index.tsx $GitHub_Account/index.tsx
   curl -o /var/www/pterodactyl/resources/scripts/theme-2.css $GitHub_Account/theme.css
 
-  apt remove -y nodejs
-  curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
-  apt update
-  apt install -y nodejs
-  npm i -g yarn
-  yarn
+  #apt remove -y nodejs
+  #curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+  #apt update
+  #apt install -y nodejs
+  #npm i -g yarn
+  #yarn
 
   yarn build:production
   php artisan optimize:clear
