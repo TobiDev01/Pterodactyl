@@ -283,5 +283,6 @@ fi
 if [ $choice == "4"]
     then
     Color="\033[0;92m"
+    clear
     echo -e "${Color}Test"
 fi
