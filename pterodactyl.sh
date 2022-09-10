@@ -9,7 +9,6 @@ clear
 
 GitHub_Account="https://raw.githubusercontent.com/TobiDev01/Pterodactyl/main/src"
 FQDN=""
-app_url="http://$FQDN"
 MYSQL_PASSWORD=""
 SSL_AVAILABLE=false
 Pterodactyl_conf="pterodactyl-no_ssl.conf"
@@ -49,7 +48,8 @@ installPanel() {
     cp .env.example .env
     COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --optimize-autoloader
     php artisan key:generate --force
-
+    
+    app_url="http://$FQDN"
     if [ "$SSL_AVAILABLE" == true ]
       then
       app_url="https://$FQDN"
