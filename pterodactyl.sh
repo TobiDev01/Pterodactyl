@@ -295,7 +295,7 @@ fi
 if [ $choice == "3" ]
   then
   cd /var/www/pterodactyl
-  rm /var/www/pterodactyl/resources/scripts/theme-2.css
+  rm /var/www/pterodactyl/resources/scripts/theme.css
   rm /var/www/pterodactyl/resources/scripts/index.tsx
   curl -o /var/www/pterodactyl/resources/scripts/index.tsx $GitHub_Account/index.tsx
   curl -o /var/www/pterodactyl/resources/scripts/theme.css $GitHub_Account/theme.css
@@ -307,7 +307,7 @@ if [ $choice == "3" ]
   yarn
   yarn build:production
   php artisan optimize:clear
-  #clear
+  clear
   echo ""
   echo -e "\033[0;92mTheme installed successfully\033[0m"
   echo ""
