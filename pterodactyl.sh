@@ -282,5 +282,6 @@ fi
 
 if [ $choice == "4"]
     then
-    echo -e "\033[0;92mTest"
+    Color="\033[0;92m"
+    echo -e "${Color}Test"
 fi
