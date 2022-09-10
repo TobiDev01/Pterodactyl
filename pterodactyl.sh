@@ -211,14 +211,14 @@ email_input() {
 summary() {
   #clear
   echo ""
-  echo -e "-- \033[1;94mDatabase credentials:\033[0m"
+  echo -e "-- \033[0;34mDatabase credentials:\033[0m"
   echo "* Name: panel"
   echo "* IPv4: 127.0.0.1"
   echo "* Port: 3306"
   echo "* User: pterodactyl"
   echo "* Password: $MYSQL_PASSWORD"
   echo ""
-  echo -e "-- \033[1;34mPanel credentials:\033[0m"
+  echo -e "-- \033[1;94mPanel credentials:\033[0m"
   echo "* Email: $email"
   echo "* Username: $user_username"
   echo "* Password: $user_password"
