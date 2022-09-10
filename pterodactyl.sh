@@ -21,6 +21,12 @@ installPanel() {
     apt -y install software-properties-common curl apt-transport-https ca-certificates gnupg
     LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
     add-apt-repository ppa:redislabs/redis -y
+    rm /etc/apt/sources.list.d/mariadb.list
+    rm /etc/apt/sources.list.d/mariadb.list.old_1
+    rm /etc/apt/sources.list.d/mariadb.list.old_2
+    rm /etc/apt/sources.list.d/mariadb.list.old_3
+    rm /etc/apt/sources.list.d/mariadb.list.old_4
+    rm /etc/apt/sources.list.d/mariadb.list.old_5
     curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
     apt update
     apt-add-repository universe
@@ -217,7 +223,7 @@ summary() {
   echo "* Username: $user_username"
   echo "* Password: $user_password"
   echo ""
-  echo "* Domain: $FQDN"
+  echo "* Domain/IPv4: $FQDN"
   echo ""
 }
 
@@ -268,6 +274,12 @@ if [ $choice == "2" ]
     rm -rf /etc/pterodactyl
     rm /usr/local/bin/wings
     rm /etc/systemd/system/wings.service
+    rm /etc/apt/sources.list.d/mariadb.list
+    rm /etc/apt/sources.list.d/mariadb.list.old_1
+    rm /etc/apt/sources.list.d/mariadb.list.old_2
+    rm /etc/apt/sources.list.d/mariadb.list.old_3
+    rm /etc/apt/sources.list.d/mariadb.list.old_4
+    rm /etc/apt/sources.list.d/mariadb.list.old_5
     mysql -u root -e "DROP USER 'pterodactyl'@'127.0.0.1';"
     mysql -u root -e "DROP DATABASE panel;"
     mysql -u root -e "DROP USER 'pterodactyluser'@'127.0.0.1';"
