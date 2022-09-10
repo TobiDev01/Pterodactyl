@@ -1,4 +1,4 @@
-[![ . ](https://cdn.discordapp.com/attachments/833023359817220169/1018069492770820146/Pterodactyl.png)]
+[![ . ](https://cdn.discordapp.com/attachments/833023359817220169/1018069492770820146/Pterodactyl.png)] Pterodactyl
 
 Install script:
 ```sh
