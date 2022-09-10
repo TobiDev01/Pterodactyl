@@ -292,11 +292,13 @@ if [ $choice == "2" ]
   exit
 fi
 
-URL=""
+BG_URL=""
+Icon_URL=""
 
 if [ $choice == "3" ]
   then
-  required_input URL "Provide the URL of an image: " "URL cannot be empty"
+  required_input BG_URL "Provide the URL of an image for the background: " "URL cannot be empty"
+  required_input Icon_URL "Provide the URL of an image for the icon: " "URL cannot be empty"
   cd /var/www/pterodactyl
   rm /var/www/pterodactyl/resources/scripts/theme.css
   rm /var/www/pterodactyl/resources/scripts/index.tsx
@@ -308,10 +310,10 @@ if [ $choice == "3" ]
   curl -o /var/www/pterodactyl/resources/scripts/components/auth/LoginFormContainer.tsx $GitHub_Account/LoginFormContainer.tsx
   curl -o /var/www/pterodactyl/resources/views/templates/wrapper.blade.php $GitHub_Account/wrapper.blade.php
   curl -o /var/www/pterodactyl/resources/views/layouts/admin.blade.php $GitHub_Account/admin.blade.php
-  sed -i -e "s@<URL>@${URL}@g" /var/www/pterodactyl/resources/scripts/theme.css
-  sed -i -e "s@<URL>@${URL}@g" /var/www/pterodactyl/resources/scripts/components/auth/LoginFormContainer.tsx
-  sed -i -e "s@<URL>@${URL}@g" /var/www/pterodactyl/resources/views/templates/wrapper.blade.php
-  sed -i -e "s@<URL>@${URL}@g" /var/www/pterodactyl/resources/views/layouts/admin.blade.php
+  sed -i -e "s@<URL>@${BG_URL}@g" /var/www/pterodactyl/resources/scripts/theme.css
+  sed -i -e "s@<URL>@${Icon_URL}@g" /var/www/pterodactyl/resources/scripts/components/auth/LoginFormContainer.tsx
+  sed -i -e "s@<URL>@${Icon_URL}@g" /var/www/pterodactyl/resources/views/templates/wrapper.blade.php
+  sed -i -e "s@<URL>@${Icon_URL}@g" /var/www/pterodactyl/resources/views/layouts/admin.blade.php
   apt remove -y nodejs
   curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
   apt update
