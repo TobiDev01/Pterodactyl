@@ -163,8 +163,6 @@ invalid_ip() {
 check_FQDN_SSL() {
   if [[ $(invalid_ip "$FQDN") == 1 && $FQDN != 'localhost' ]]; then
     SSL_AVAILABLE=true
-  else
-    echo "* Enter a valid domain name."
   fi
 }
 password_input() {
@@ -237,15 +235,13 @@ echo ""
 read -p "Please enter a number: " choice
 echo ""
 
-if [ $choice == "0" ]
-    then
+if [ $choice == "0" ] then
     echo -e "\033[0;96mCya\033[0m"
     echo ""
     exit
 fi
 
-if [ $choice == "1" ]
-    then
+if [ $choice == "1" ] then
 
     password_input MYSQL_PASSWORD "Provide password for database: " "MySQL password cannot be empty"
     email_input email "Provide email address for panel: " "Email cannot be empty or invalid"
@@ -253,19 +249,18 @@ if [ $choice == "1" ]
     password_input user_password "Provide password for panel: " "Password cannot be empty"
 
     while [ -z "$FQDN" ]; do
-    echo -n "* Set the FQDN of this panel (panel.example.com): "
+    echo -n "* Set the FQDN of this panel (panel.example.com | 0.0.0.0): "
     read -r FQDN
     [ -z "$FQDN" ] && print_error "FQDN cannot be empty"
     done
 
     check_FQDN_SSL
-    #installPanel
+    installPanel
     summary
     exit
 fi
 
-if [ $choice == "2" ]
-    then
+if [ $choice == "2" ] then
     rm -rf /var/www/pterodactyl
     rm /etc/systemd/system/pteroq.service
     rm /etc/nginx/sites-available/pterodactyl.conf
@@ -294,7 +289,6 @@ if [ $choice == "2" ]
     exit
 fi
 
-if [ $choice == "3"]
-    then
+if [ $choice == "3"] then
     bash <(curl https://raw.githubusercontent.com/Angelillo15/MinecraftPurpleTheme/main/install.sh)
 fi
