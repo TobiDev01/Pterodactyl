@@ -271,7 +271,7 @@ if [ $choice == "2" ]
     mysql -u root -e "DROP USER 'pterodactyluser'@'127.0.0.1';"
     mysql -u root -e "DROP USER 'pterodactyluser'@'%';"
     systemctl restart nginx
-    #clear
+    clear
     echo "* Panel uninstalled successfully"
 fi
 
