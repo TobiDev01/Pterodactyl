@@ -239,6 +239,7 @@ echo ""
 if [ $choice == "0" ]
     then
     echo -e "\033[0;96mCya\033[0m"
+    echo ""
     exit
 fi
 
