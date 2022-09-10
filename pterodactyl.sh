@@ -307,7 +307,7 @@ if [ $choice == "3"]
   #npm i -g yarn
   #yarn
 
-  yarn build:production
+  #yarn build:production
   php artisan optimize:clear
   clear
   echo ""
