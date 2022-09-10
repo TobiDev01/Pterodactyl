@@ -272,10 +272,15 @@ if [ $choice == "2" ]
     mysql -u root -e "DROP USER 'pterodactyluser'@'%';"
     systemctl restart nginx
     clear
-    echo "* Panel uninstalled successfully"
+    echo -e "\033[0;92mPanel uninstalled successfully"
 fi
 
 if [ $choice == "3"]
     then
     bash <(curl https://raw.githubusercontent.com/Angelillo15/MinecraftPurpleTheme/main/install.sh)
+fi
+
+if [ $choice == "4"]
+    then
+    echo -e "\033[0;92mTest"
 fi
