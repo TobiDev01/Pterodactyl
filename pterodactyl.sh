@@ -18,7 +18,7 @@ user_username=""
 user_password=""
 email_regex="^(([A-Za-z0-9]+((\.|\-|\_|\+)?[A-Za-z0-9]?)*[A-Za-z0-9]+)|[A-Za-z0-9]+)@(([A-Za-z0-9]+)+((\.|\-|\_)?([A-Za-z0-9]+)+)*)+\.([A-Za-z]{2,})+$"
 
-installPanel(){
+installPanel() {
     apt -y install software-properties-common curl apt-transport-https ca-certificates gnupg
     LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
     add-apt-repository ppa:redislabs/redis -y
@@ -279,6 +279,7 @@ fi
 if [ $choice == "3"]
     then
     bash <(curl https://raw.githubusercontent.com/Angelillo15/MinecraftPurpleTheme/main/install.sh)
+    done
 fi
 
 if [ $choice == "4"]
@@ -286,4 +287,5 @@ if [ $choice == "4"]
     Color="\033[0;92m"
     clear
     echo -e "${Color}Test"
+    done
 fi
