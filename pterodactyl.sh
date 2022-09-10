@@ -294,5 +294,24 @@ fi
 
 if [ $choice == "3"]
   then
-  bash <(curl https://raw.githubusercontent.com/Angelillo15/MinecraftPurpleTheme/main/install.sh)
+  cd /var/www/pterodactyl
+  rm /var/www/pterodactyl/resources/scripts/theme-2.css
+  rm /var/www/pterodactyl/resources/scripts/index.tsx
+  curl -o /var/www/pterodactyl/resources/scripts/index.tsx $GitHub_Account/index.tsx
+  curl -o /var/www/pterodactyl/resources/scripts/theme-2.css $GitHub_Account/theme.css
+
+  apt remove -y nodejs
+  curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+  apt update
+  apt install -y nodejs
+  npm i -g yarn
+  yarn
+
+  yarn build:production
+  php artisan optimize:clear
+  clear
+  echo ""
+  echo -e "\033[0;92mTheme installed successfully\033[0m"
+  echo ""
+  exit
 fi
