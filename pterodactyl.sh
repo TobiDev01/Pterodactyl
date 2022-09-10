@@ -9,19 +9,13 @@ clear
 
 GitHub_Account="https://raw.githubusercontent.com/TobiDev01/Pterodactyl/main/src"
 
-FQDN="192.168.0.230"
-MYSQL_PASSWORD="13579"
-email="root@prodevs.tk"
-user_username="root"
-user_password="13579"
-
-#FQDN=""
-#MYSQL_PASSWORD=""
+FQDN=""
+MYSQL_PASSWORD=""
 SSL_AVAILABLE=false
 Pterodactyl_conf="pterodactyl-no_ssl.conf"
-#email=""
-#user_username=""
-#user_password=""
+email=""
+user_username=""
+user_password=""
 email_regex="^(([A-Za-z0-9]+((\.|\-|\_|\+)?[A-Za-z0-9]?)*[A-Za-z0-9]+)|[A-Za-z0-9]+)@(([A-Za-z0-9]+)+((\.|\-|\_)?([A-Za-z0-9]+)+)*)+\.([A-Za-z]{2,})+$"
 
 installPanel() {
@@ -216,7 +210,7 @@ email_input() {
   eval "$__resultvar="'$result'""
 }
 summary() {
-  #clear
+  clear
   echo ""
   echo -e "\033[1;94mDatabase credentials:\033[0m"
   echo -e "\033[1;92m*\033[0m Name: panel"
