@@ -300,9 +300,18 @@ if [ $choice == "3" ]
   cd /var/www/pterodactyl
   rm /var/www/pterodactyl/resources/scripts/theme.css
   rm /var/www/pterodactyl/resources/scripts/index.tsx
+  rm /var/www/pterodactyl/resources/scripts/components/auth/LoginFormContainer.tsx
+  rm /var/www/pterodactyl/resources/views/templates/wrapper.blade.php
+  rm /var/www/pterodactyl/resources/views/layouts/admin.blade.php
   curl -o /var/www/pterodactyl/resources/scripts/index.tsx $GitHub_Account/index.tsx
   curl -o /var/www/pterodactyl/resources/scripts/theme.css $GitHub_Account/theme.css
+  curl -o /var/www/pterodactyl/resources/scripts/components/auth/LoginFormContainer.tsx $GitHub_Account/LoginFormContainer.tsx
+  curl -o /var/www/pterodactyl/resources/views/templates/wrapper.blade.php $GitHub_Account/wrapper.blade.php
+  curl -o /var/www/pterodactyl/resources/views/layouts/admin.blade.php $GitHub_Account/admin.blade.php
   sed -i -e "s@<URL>@${URL}@g" /var/www/pterodactyl/resources/scripts/theme.css
+  sed -i -e "s@<URL>@${URL}@g" /var/www/pterodactyl/resources/scripts/components/auth/LoginFormContainer.tsx
+  sed -i -e "s@<URL>@${URL}@g" /var/www/pterodactyl/resources/views/templates/wrapper.blade.php
+  sed -i -e "s@<URL>@${URL}@g" /var/www/pterodactyl/resources/views/layouts/admin.blade.php
   apt remove -y nodejs
   curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
   apt update
