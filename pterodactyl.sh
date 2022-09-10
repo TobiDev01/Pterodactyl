@@ -259,6 +259,7 @@ if [ $choice == "1" ]
     check_FQDN_SSL
     #installPanel
     summary
+    exit
 fi
 
 if [ $choice == "2" ]
@@ -286,6 +287,7 @@ if [ $choice == "2" ]
     systemctl restart nginx
     clear
     echo -e "\033[0;92mPanel uninstalled successfully\033[0m"
+    exit
 fi
 
 if [ $choice == "3"]
