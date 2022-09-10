@@ -232,7 +232,6 @@ echo "[0] Exit"
 echo "[1] Install panel"
 echo "[2] uninstall panel"
 echo "[3] Install theme"
-echo "[4] Test"
 echo ""
 read -p "Please enter a number: " choice
 echo ""
@@ -292,12 +291,4 @@ fi
 if [ $choice == "3"]
     then
     bash <(curl https://raw.githubusercontent.com/Angelillo15/MinecraftPurpleTheme/main/install.sh)
-fi
-
-if [ $choice == "4"]
-    then
-    startColor="\033[0;92m"
-    endColor="\033[0m"
-    clear
-    echo -e "${startColor}Test${endColor}"
 fi
