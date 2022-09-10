@@ -225,6 +225,7 @@ echo "[0] Exit"
 echo "[1] Install panel"
 echo "[2] uninstall panel"
 echo "[3] Install theme"
+echo "[4] Test"
 echo ""
 read -p "Please enter a number: " choice
 echo ""
