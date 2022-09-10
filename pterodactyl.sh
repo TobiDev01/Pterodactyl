@@ -309,7 +309,7 @@ if [ $choice == "3" ]
 
   #yarn build:production
   php artisan optimize:clear
-  clear
+  #clear
   echo ""
   echo -e "\033[0;92mTheme installed successfully\033[0m"
   echo ""
