@@ -292,7 +292,7 @@ if [ $choice == "2" ]
   exit
 fi
 
-if [ $choice == "3"]
+if [ $choice == "3" ]
   then
   cd /var/www/pterodactyl
   rm /var/www/pterodactyl/resources/scripts/theme-2.css
