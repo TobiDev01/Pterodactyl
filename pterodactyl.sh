@@ -240,6 +240,7 @@ required_input choice "Please enter a number"
 
 if [ $choice == "0" ]
     then
+    echo $choice
     echo "\033[0;96mCya\033[0m"
     exit
 fi
