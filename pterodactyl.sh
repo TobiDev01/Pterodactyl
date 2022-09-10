@@ -292,13 +292,17 @@ if [ $choice == "2" ]
   exit
 fi
 
+URL=""
+
 if [ $choice == "3" ]
   then
+  required_input URL "Provide the URL of an image: " "URL cannot be empty"
   cd /var/www/pterodactyl
   rm /var/www/pterodactyl/resources/scripts/theme.css
   rm /var/www/pterodactyl/resources/scripts/index.tsx
   curl -o /var/www/pterodactyl/resources/scripts/index.tsx $GitHub_Account/index.tsx
   curl -o /var/www/pterodactyl/resources/scripts/theme.css $GitHub_Account/theme.css
+  sed -i -e "s@<URL>@${URL}@g" /var/www/pterodactyl/resources/scripts/theme.css
   apt remove -y nodejs
   curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
   apt update
