@@ -273,7 +273,7 @@ if [ $choice == "2" ]
     mysql -u root -e "DROP USER 'pterodactyluser'@'%';"
     systemctl restart nginx
     clear
-    echo -e "\033[0;92mPanel uninstalled successfully"
+    echo -e "\033[0;92mPanel uninstalled successfully\033[0m"
 fi
 
 if [ $choice == "3"]
@@ -284,8 +284,9 @@ fi
 
 if [ $choice == "4"]
     then
-    Color="\033[0;92m"
+    startColor="\033[0;92m"
+    endColor="\033[0m"
     clear
-    echo -e "${Color}Test"
+    echo -e "${startColor}Test${endColor}"
     done
 fi
