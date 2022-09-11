@@ -72,8 +72,8 @@ installPanel() {
   --author="$email" \
   --url="$app_url" \
   --timezone="America/New_York" \
-  --cache="redis" \
-  --session="redis" \
+  --cache="file" \
+  --session="file" \
   --queue="redis" \
   --redis-host="localhost" \
   --redis-pass="null" \
