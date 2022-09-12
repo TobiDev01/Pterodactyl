@@ -292,12 +292,14 @@ if [ $choice == "2" ]
   exit
 fi
 
-BG_URL=""
-Icon_URL=""
-
 if [ $choice == "3" ]
   then
-  required_input BG_URL "Provide the URL of an image for the background: " "URL cannot be empty"
+  required_input BG_URL "Provide the URL of an image for the background: "
+
+  BG_URL=url("$BG_URL")
+  Icon_URL=""
+  [ -z "$BG_URL" ] && BG_URL=transparent
+
   required_input Icon_URL "Provide the URL of an image for the icon: " "URL cannot be empty"
   cd /var/www/pterodactyl
   rm /var/www/pterodactyl/resources/scripts/theme.css
