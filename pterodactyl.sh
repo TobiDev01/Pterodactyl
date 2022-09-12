@@ -296,7 +296,7 @@ if [ $choice == "3" ]
   then
   required_input BG_URL "Provide the URL of an image for the background: "
 
-  BG_URL=url("$BG_URL")
+  BG_URL="$BG_URL"
   Icon_URL=""
   [ -z "$BG_URL" ] && BG_URL=transparent
 
