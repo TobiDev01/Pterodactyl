@@ -294,7 +294,8 @@ fi
 
 if [ $choice == "3" ]
   then
-  required_input BG_URL "Provide the URL of an image for the background: "
+  echo -n "Provide the URL of an image for the background: "
+  read -r BG_URL
 
   BG_URL="$BG_URL"
   Icon_URL=""
