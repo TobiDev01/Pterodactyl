@@ -296,10 +296,12 @@ if [ $choice == "3" ]
   then
   echo -n "Provide the URL of an image for the background: "
   read -r BG_URL
-
-  BG_URL="$BG_URL"
+  
+  Theme=theme
+  BG_URL=$BG_URL
   Icon_URL=""
-  [ -z "$BG_URL" ] && BG_URL=transparent
+
+  [ -z "$BG_URL" ] && Theme=theme_2
 
   required_input Icon_URL "Provide the URL of an image for the icon: " "URL cannot be empty"
   cd /var/www/pterodactyl
@@ -309,7 +311,7 @@ if [ $choice == "3" ]
   rm /var/www/pterodactyl/resources/views/templates/wrapper.blade.php
   rm /var/www/pterodactyl/resources/views/layouts/admin.blade.php
   curl -o /var/www/pterodactyl/resources/scripts/index.tsx $GitHub_Account/index.tsx
-  curl -o /var/www/pterodactyl/resources/scripts/theme.css $GitHub_Account/theme.css
+  curl -o /var/www/pterodactyl/resources/scripts/theme.css $GitHub_Account/$Theme.css
   curl -o /var/www/pterodactyl/resources/scripts/components/auth/LoginFormContainer.tsx $GitHub_Account/LoginFormContainer.tsx
   curl -o /var/www/pterodactyl/resources/views/templates/wrapper.blade.php $GitHub_Account/wrapper.blade.php
   curl -o /var/www/pterodactyl/resources/views/layouts/admin.blade.php $GitHub_Account/admin.blade.php
