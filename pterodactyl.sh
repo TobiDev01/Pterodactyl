@@ -297,11 +297,11 @@ if [ $choice == "3" ]
   echo -n "Provide the URL of an image for the background: "
   read -r BG_URL
   
-  Theme=theme
+  Theme=theme_2
   BG_URL=$BG_URL
   Icon_URL=""
 
-  [ -z "$BG_URL" ] && Theme=theme_2
+  [ -z "$BG_URL" ] && Theme=theme
 
   required_input Icon_URL "Provide the URL of an image for the icon: " "URL cannot be empty"
   cd /var/www/pterodactyl
