@@ -272,6 +272,10 @@ fi
 if [ $choice == "2" ]
   then
   installWings
+  clear
+  echo ""
+  echo -e "\033[0;92mWings installed successfully\033[0m"
+  echo ""
   exit
 fi
 
