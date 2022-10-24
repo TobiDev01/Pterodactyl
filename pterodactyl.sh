@@ -132,6 +132,19 @@ installWings() {
     rm /etc/systemd/system/wings.service
     curl -o /etc/systemd/system/wings.service $GitHub_Account/wings.service
 }
+updatePanel() {
+    cd /var/www/pterodactyl
+    php artisan down
+    curl -L https://github.com/pterodactyl/panel/releases/latest/download/panel.tar.gz | tar -xzv
+    chmod -R 755 storage/* bootstrap/cache
+    composer install --no-dev --optimize-autoloader
+    php artisan optimize:clear
+    php artisan migrate --seed --force
+    chown -R www-data:www-data /var/www/pterodactyl/*
+    php artisan queue:restart
+    php artisan up
+    cd
+}
 
 print_error() {
   COLOR_RED='\033[0;31m'
@@ -237,8 +250,9 @@ echo "[0] Exit"
 echo "[1] Install panel"
 echo "[2] Install wings"
 echo "[3] Install panel & wings"
-echo "[4] uninstall panel & wings"
-echo "[5] Install theme"
+echo "[4] Update panel"
+echo "[5] uninstall panel & wings"
+echo "[6] Install theme"
 echo ""
 read -p "Please enter a number: " choice
 echo ""
@@ -270,13 +284,13 @@ if [ $choice == "1" ]
 fi
 
 if [ $choice == "2" ]
-  then
-  installWings
-  clear
-  echo ""
-  echo -e "\033[0;92mWings installed successfully\033[0m"
-  echo ""
-  exit
+    then
+    installWings
+    clear
+    echo ""
+    echo -e "\033[0;92mWings installed successfully\033[0m"
+    echo ""
+    exit
 fi
 
 if [ $choice == "3" ]
@@ -300,6 +314,16 @@ if [ $choice == "3" ]
 fi
 
 if [ $choice == "4" ]
+    then
+    updatePanel
+    clear
+    echo ""
+    echo -e "\033[0;92mPanel updated successfully\033[0m"
+    echo ""
+    exit
+fi
+
+if [ $choice == "5" ]
   then
   rm -rf /var/www/pterodactyl
   rm /etc/systemd/system/pteroq.service
@@ -329,7 +353,7 @@ if [ $choice == "4" ]
   exit
 fi
 
-if [ $choice == "5" ]
+if [ $choice == "6" ]
   then
   echo -n "Provide the URL of an image for the background: "
   read -r BG_URL
