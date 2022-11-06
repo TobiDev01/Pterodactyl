@@ -54,6 +54,8 @@ installPanel() {
     curl -o /etc/mysql/my.cnf $GitHub_Account/my.cnf
     rm /etc/mysql/mariadb.conf.d/50-server.cnf
     curl -o /etc/mysql/mariadb.conf.d/50-server.cnf $GitHub_Account/50-server.cnf
+    systemctl restart mysql
+    systemctl restart mariadb
     cp .env.example .env
     COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --optimize-autoloader
     php artisan key:generate --force
@@ -366,20 +368,24 @@ if [ $choice == "6" ]
 
   required_input Icon_URL "Provide the URL of an image for the icon: " "URL cannot be empty"
   cd /var/www/pterodactyl
+  
   rm /var/www/pterodactyl/resources/scripts/theme.css
   rm /var/www/pterodactyl/resources/scripts/index.tsx
   rm /var/www/pterodactyl/resources/scripts/components/auth/LoginFormContainer.tsx
   rm /var/www/pterodactyl/resources/views/templates/wrapper.blade.php
   rm /var/www/pterodactyl/resources/views/layouts/admin.blade.php
+
   curl -o /var/www/pterodactyl/resources/scripts/index.tsx $GitHub_Account/index.tsx
   curl -o /var/www/pterodactyl/resources/scripts/theme.css $GitHub_Account/$Theme.css
   curl -o /var/www/pterodactyl/resources/scripts/components/auth/LoginFormContainer.tsx $GitHub_Account/LoginFormContainer.tsx
   curl -o /var/www/pterodactyl/resources/views/templates/wrapper.blade.php $GitHub_Account/wrapper.blade.php
   curl -o /var/www/pterodactyl/resources/views/layouts/admin.blade.php $GitHub_Account/admin.blade.php
+  
   sed -i -e "s@<URL>@${BG_URL}@g" /var/www/pterodactyl/resources/scripts/theme.css
   sed -i -e "s@<URL>@${Icon_URL}@g" /var/www/pterodactyl/resources/scripts/components/auth/LoginFormContainer.tsx
   sed -i -e "s@<URL>@${Icon_URL}@g" /var/www/pterodactyl/resources/views/templates/wrapper.blade.php
   sed -i -e "s@<URL>@${Icon_URL}@g" /var/www/pterodactyl/resources/views/layouts/admin.blade.php
+  
   apt remove -y nodejs
   curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
   apt update
