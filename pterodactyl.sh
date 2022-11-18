@@ -444,8 +444,6 @@ fi
 
 if [ $choice == "7" ]
   then
-  echo ""
-  echo -e "\033[0;92m$ulimit\033[0m"
-  echo ""
+  echo "$ulimit_i"
   exit
 fi
