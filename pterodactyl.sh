@@ -68,7 +68,7 @@ installPanel() {
         apt update
         apt install -y certbot
         apt install -y python3-certbot-nginx
-        certbot certonly --nginx --redirect --no-eff-email --email "$email" -d "$FQDN"
+        certbot certonly --nginx --redirect --no-eff-email --register-unsafely-without-email -d "$FQDN"
     fi
 
     php artisan p:environment:setup \
@@ -120,7 +120,6 @@ installPanel() {
     systemctl restart nginx
     cd
 }
-
 installWings() {
     cd
     rm /etc/apt/sources.list.d/mariadb.list
@@ -151,7 +150,7 @@ installWings() {
         apt update
         apt install -y certbot
         apt install -y python3-certbot-nginx
-        certbot certonly --nginx --redirect --no-eff-email --email "$email" -d "$FQDN"
+        certbot certonly --nginx --redirect --no-eff-email --register-unsafely-without-email -d "$FQDN"
     fi
 
     curl -sSL https://get.docker.com/ | CHANNEL=stable bash
@@ -264,10 +263,10 @@ summary() {
   clear
   echo ""
   echo -e "\033[1;94mDatabase credentials:\033[0m"
-  echo -e "\033[1;92m*\033[0m Name: panel"
+  echo -e "\033[1;92m*\033[0m Database name: panel"
   echo -e "\033[1;92m*\033[0m IPv4: 127.0.0.1"
   echo -e "\033[1;92m*\033[0m Port: 3306"
-  echo -e "\033[1;92m*\033[0m User: pterodactyl"
+  echo -e "\033[1;92m*\033[0m User: pterodactyl, pterodactyluser"
   echo -e "\033[1;92m*\033[0m Password: $MYSQL_PASSWORD"
   echo ""
   echo -e "\033[1;94mPanel credentials:\033[0m"
@@ -287,6 +286,7 @@ echo "[3] Install panel & wings"
 echo "[4] Update panel"
 echo "[5] uninstall panel & wings"
 echo "[6] Install theme"
+echo "[7] Control over the resources available"
 echo ""
 read -p "Please enter a number: " choice
 echo ""
@@ -438,6 +438,14 @@ if [ $choice == "6" ]
   clear
   echo ""
   echo -e "\033[0;92mTheme installed successfully\033[0m"
+  echo ""
+  exit
+fi
+
+if [ $choice == "7" ]
+  then
+  echo ""
+  echo -e "\033[0;92m$ulimit\033[0m"
   echo ""
   exit
 fi
