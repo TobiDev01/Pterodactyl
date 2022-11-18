@@ -123,6 +123,37 @@ installPanel() {
 
 installWings() {
     cd
+    rm /etc/apt/sources.list.d/mariadb.list
+    rm /etc/apt/sources.list.d/mariadb.list.old_1
+    rm /etc/apt/sources.list.d/mariadb.list.old_2
+    rm /etc/apt/sources.list.d/mariadb.list.old_3
+    rm /etc/apt/sources.list.d/mariadb.list.old_4
+    rm /etc/apt/sources.list.d/mariadb.list.old_5
+    curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
+    apt update
+    apt-add-repository universe
+    apt -y install php8.1 php8.1-{cli,gd,mysql,pdo,mbstring,tokenizer,bcmath,xml,fpm,curl,zip} mariadb-server nginx tar unzip git redis-server
+    
+    mysql -u root -e "CREATE USER 'pterodactyluser'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';"
+    mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'pterodactyluser'@'%' WITH GRANT OPTION;"
+    mysql -u root -e "flush privileges;"
+
+    rm /etc/mysql/my.cnf
+    curl -o /etc/mysql/my.cnf $GitHub_Account/my.cnf
+    rm /etc/mysql/mariadb.conf.d/50-server.cnf
+    curl -o /etc/mysql/mariadb.conf.d/50-server.cnf $GitHub_Account/50-server.cnf
+    systemctl restart mysql
+    systemctl restart mariadb
+
+    app_url="http://$FQDN"
+    if [ "$SSL_AVAILABLE" == true ]
+        then
+        apt update
+        apt install -y certbot
+        apt install -y python3-certbot-nginx
+        certbot certonly --nginx --redirect --no-eff-email --email "$email" -d "$FQDN"
+    fi
+
     curl -sSL https://get.docker.com/ | CHANNEL=stable bash
     systemctl enable --now docker
     rm /etc/default/grub
@@ -133,6 +164,7 @@ installWings() {
     chmod u+x /usr/local/bin/wings
     rm /etc/systemd/system/wings.service
     curl -o /etc/systemd/system/wings.service $GitHub_Account/wings.service
+    cd
 }
 updatePanel() {
     cd /var/www/pterodactyl
@@ -287,6 +319,15 @@ fi
 
 if [ $choice == "2" ]
     then
+    password_input MYSQL_PASSWORD "Provide password for database: " "MySQL password cannot be empty"
+
+    while [ -z "$FQDN" ]; do
+    echo -n "* Set the FQDN of this panel (panel.example.com | 0.0.0.0): "
+    read -r FQDN
+    [ -z "$FQDN" ] && print_error "FQDN cannot be empty"
+    done
+
+    check_FQDN_SSL
     installWings
     clear
     echo ""
