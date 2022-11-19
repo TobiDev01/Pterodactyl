@@ -178,6 +178,118 @@ updatePanel() {
     php artisan up
     cd
 }
+installPanelAndwings() {
+    cd
+    apt -y install software-properties-common curl apt-transport-https ca-certificates gnupg
+    LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
+    add-apt-repository ppa:redislabs/redis -y
+    rm /etc/apt/sources.list.d/mariadb.list
+    rm /etc/apt/sources.list.d/mariadb.list.old_1
+    rm /etc/apt/sources.list.d/mariadb.list.old_2
+    rm /etc/apt/sources.list.d/mariadb.list.old_3
+    rm /etc/apt/sources.list.d/mariadb.list.old_4
+    rm /etc/apt/sources.list.d/mariadb.list.old_5
+    curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
+    apt update
+    apt-add-repository universe
+    apt -y install php8.1 php8.1-{cli,gd,mysql,pdo,mbstring,tokenizer,bcmath,xml,fpm,curl,zip} mariadb-server nginx tar unzip git redis-server
+    curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
+    mkdir -p /var/www/pterodactyl
+    cd /var/www/pterodactyl
+    curl -Lo panel.tar.gz https://github.com/pterodactyl/panel/releases/latest/download/panel.tar.gz
+    tar -xzvf panel.tar.gz
+    rm /var/www/pterodactyl/panel.tar.gz
+    chmod -R 755 storage/* bootstrap/cache/
+
+    mysql -u root -e "CREATE USER 'pterodactyl'@'127.0.0.1' IDENTIFIED BY '${MYSQL_PASSWORD}';"
+    mysql -u root -e "CREATE DATABASE panel;"
+    mysql -u root -e "GRANT ALL PRIVILEGES ON panel.* TO 'pterodactyl'@'127.0.0.1' WITH GRANT OPTION;"
+    mysql -u root -e "CREATE USER 'pterodactyluser'@'127.0.0.1' IDENTIFIED BY '${MYSQL_PASSWORD}';"
+    mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'pterodactyluser'@'127.0.0.1' WITH GRANT OPTION;"
+    mysql -u root -e "CREATE USER 'pterodactyluser'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';"
+    mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'pterodactyluser'@'%' WITH GRANT OPTION;"
+    mysql -u root -e "flush privileges;"
+
+    rm /etc/mysql/my.cnf
+    curl -o /etc/mysql/my.cnf $GitHub_Account/my.cnf
+    rm /etc/mysql/mariadb.conf.d/50-server.cnf
+    curl -o /etc/mysql/mariadb.conf.d/50-server.cnf $GitHub_Account/50-server.cnf
+    systemctl restart mysql
+    systemctl restart mariadb
+    cp .env.example .env
+    COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --optimize-autoloader
+    php artisan key:generate --force
+        
+    app_url="http://$FQDN"
+    if [ "$SSL_AVAILABLE" == true ]
+        then
+        app_url="https://$FQDN"
+        Pterodactyl_conf="pterodactyl.conf"
+        apt update
+        apt install -y certbot
+        apt install -y python3-certbot-nginx
+        certbot certonly --nginx --redirect --no-eff-email --register-unsafely-without-email -d "$FQDN"
+    fi
+
+    php artisan p:environment:setup \
+    --author="$email" \
+    --url="$app_url" \
+    --timezone="America/New_York" \
+    --cache="file" \
+    --session="file" \
+    --queue="redis" \
+    --redis-host="localhost" \
+    --redis-pass="null" \
+    --redis-port="6379" \
+    --settings-ui=true
+
+    php artisan p:environment:database \
+    --host="127.0.0.1" \
+    --port="3306" \
+    --database="panel" \
+    --username="pterodactyl" \
+    --password="${MYSQL_PASSWORD}"
+
+    php artisan migrate --seed --force
+
+    php artisan p:user:make \
+    --email="$email" \
+    --username="$user_username" \
+    --name-first="$user_username" \
+    --name-last="$user_username" \
+    --password="$user_password" \
+    --admin=1
+
+    chown -R www-data:www-data /var/www/pterodactyl/*
+
+    crontab -l | {
+        cat
+        echo "* * * * * php /var/www/pterodactyl/artisan schedule:run >> /dev/null 2>&1"
+    } | crontab -
+
+    rm /etc/systemd/system/pteroq.service
+    curl -o /etc/systemd/system/pteroq.service $GitHub_Account/pteroq.service
+    systemctl enable --now redis-server
+    systemctl enable --now pteroq.service
+    rm /etc/nginx/sites-enabled/default
+    rm /etc/nginx/sites-available/pterodactyl.conf
+    rm /etc/nginx/sites-enabled/pterodactyl.conf
+    curl -o /etc/nginx/sites-available/pterodactyl.conf $GitHub_Account/$Pterodactyl_conf
+    sed -i -e "s@<domain>@${FQDN}@g" /etc/nginx/sites-available/pterodactyl.conf
+    ln -s /etc/nginx/sites-available/pterodactyl.conf /etc/nginx/sites-enabled/pterodactyl.conf
+    systemctl restart nginx
+    curl -sSL https://get.docker.com/ | CHANNEL=stable bash
+    systemctl enable --now docker
+    rm /etc/default/grub
+    curl -o /etc/default/grub $GitHub_Account/grub
+    update-grub
+    mkdir -p /etc/pterodactyl
+    curl -L -o /usr/local/bin/wings "https://github.com/pterodactyl/wings/releases/latest/download/wings_linux_$([[ "$(uname -m)" == "x86_64" ]] && echo "amd64" || echo "arm64")"
+    chmod u+x /usr/local/bin/wings
+    rm /etc/systemd/system/wings.service
+    curl -o /etc/systemd/system/wings.service $GitHub_Account/wings.service
+    cd
+}
 
 print_error() {
   COLOR_RED='\033[0;31m'
@@ -286,7 +398,6 @@ echo "[3] Install panel & wings"
 echo "[4] Update panel"
 echo "[5] uninstall panel & wings"
 echo "[6] Install theme"
-echo "[7] Control over the resources available"
 echo ""
 read -p "Please enter a number: " choice
 echo ""
@@ -350,8 +461,7 @@ if [ $choice == "3" ]
     done
 
     check_FQDN_SSL
-    installPanel
-    installWings
+    installPanelAndwings
     summary
     exit
 fi
@@ -439,11 +549,5 @@ if [ $choice == "6" ]
   echo ""
   echo -e "\033[0;92mTheme installed successfully\033[0m"
   echo ""
-  exit
-fi
-
-if [ $choice == "7" ]
-  then
-  echo "$ulimit_i"
   exit
 fi
