@@ -1,8 +1,8 @@
 if (( $EUID != 0 )); then
-  echo ""
-  echo "Please run as root"
-  echo ""
-  exit
+    echo ""
+    echo "Please run as root"
+    echo ""
+    exit
 fi
 
 clear
@@ -41,6 +41,10 @@ installPanel() {
     rm /var/www/pterodactyl/panel.tar.gz
     chmod -R 755 storage/* bootstrap/cache/
 
+    mysql -u root -e "DROP USER 'pterodactyl'@'127.0.0.1';"
+    mysql -u root -e "DROP DATABASE panel;"
+    mysql -u root -e "DROP USER 'pterodactyluser'@'127.0.0.1';"
+    mysql -u root -e "DROP USER 'pterodactyluser'@'%';"
     mysql -u root -e "CREATE USER 'pterodactyl'@'127.0.0.1' IDENTIFIED BY '${MYSQL_PASSWORD}';"
     mysql -u root -e "CREATE DATABASE panel;"
     mysql -u root -e "GRANT ALL PRIVILEGES ON panel.* TO 'pterodactyl'@'127.0.0.1' WITH GRANT OPTION;"
@@ -120,6 +124,7 @@ installPanel() {
     systemctl restart nginx
     cd
 }
+
 installWings() {
     cd
     rm /etc/apt/sources.list.d/mariadb.list
@@ -165,6 +170,7 @@ installWings() {
     curl -o /etc/systemd/system/wings.service $GitHub_Account/wings.service
     cd
 }
+
 updatePanel() {
     cd /var/www/pterodactyl
     php artisan down
@@ -178,6 +184,7 @@ updatePanel() {
     php artisan up
     cd
 }
+
 installPanelAndwings() {
     cd
     apt -y install software-properties-common curl apt-transport-https ca-certificates gnupg
