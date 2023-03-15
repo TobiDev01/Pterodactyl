@@ -549,6 +549,7 @@ if [ $choice == "5" ] then
     yarn build:production
     php artisan optimize:clear
     rm -rf node_modules
+    apt remove -y nodejs
     clear
     echo ""
     echo -e "\033[0;92mTheme installed successfully\033[0m"
