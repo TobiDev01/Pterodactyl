@@ -299,102 +299,101 @@ installPanelAndwings() {
 }
 
 print_error() {
-  COLOR_RED='\033[0;31m'
-  COLOR_NC='\033[0m'
+    COLOR_RED='\033[0;31m'
+    COLOR_NC='\033[0m'
 
-  echo ""
-  echo -e "* ${COLOR_RED}ERROR${COLOR_NC}: $1"
-  echo ""
+    echo ""
+    echo -e "* ${COLOR_RED}ERROR${COLOR_NC}: $1"
+    echo ""
 }
 required_input() {
-  local __resultvar=$1
-  local result=''
+    local __resultvar=$1
+    local result=''
 
-  while [ -z "$result" ]; do
-    echo -n "* ${2}"
-    read -r result
+    while [ -z "$result" ]; do
+        echo -n "* ${2}"
+        read -r result
 
-    if [ -z "${3}" ]; then
-      [ -z "$result" ] && result="${4}"
-    else
-      [ -z "$result" ] && print_error "${3}"
-    fi
-  done
+        if [ -z "${3}" ]; then
+        [ -z "$result" ] && result="${4}"
+        else
+        [ -z "$result" ] && print_error "${3}"
+        fi
+    done
 
-  eval "$__resultvar="'$result'""
+    eval "$__resultvar="'$result'""
 }
 valid_email() {
-  [[ $1 =~ ${email_regex} ]]
+    [[ $1 =~ ${email_regex} ]]
 }
 invalid_ip() {
-  ip route get "$1" >/dev/null 2>&1
-  echo $?
+    ip route get "$1" >/dev/null 2>&1
+    echo $?
 }
 check_FQDN_SSL() {
-  if [[ $(invalid_ip "$FQDN") == 1 && $FQDN != 'localhost' ]];
-    then
-    SSL_AVAILABLE=true
-  fi
+    if [[ $(invalid_ip "$FQDN") == 1 && $FQDN != 'localhost' ]]; then
+        SSL_AVAILABLE=true
+    fi
 }
 password_input() {
-  local __resultvar=$1
-  local result=''
-  local default="$4"
+    local __resultvar=$1
+    local result=''
+    local default="$4"
 
-  while [ -z "$result" ]; do
-    echo -n "* ${2}"
+    while [ -z "$result" ]; do
+        echo -n "* ${2}"
 
-    while IFS= read -r -s -n1 char; do
-      [[ -z $char ]] && {
-        printf '\n'
-        break
-      }
-      if [[ $char == $'\x7f' ]]; then
-        if [ -n "$result" ]; then
-          [[ -n $result ]] && result=${result%?}
-          printf '\b \b'
+        while IFS= read -r -s -n1 char; do
+        [[ -z $char ]] && {
+            printf '\n'
+            break
+        }
+        if [[ $char == $'\x7f' ]]; then
+            if [ -n "$result" ]; then
+            [[ -n $result ]] && result=${result%?}
+            printf '\b \b'
+            fi
+        else
+            result+=$char
+            printf '*'
         fi
-      else
-        result+=$char
-        printf '*'
-      fi
+        done
+        [ -z "$result" ] && [ -n "$default" ] && result="$default"
+        [ -z "$result" ] && print_error "${3}"
     done
-    [ -z "$result" ] && [ -n "$default" ] && result="$default"
-    [ -z "$result" ] && print_error "${3}"
-  done
 
-  eval "$__resultvar="'$result'""
+    eval "$__resultvar="'$result'""
 }
 email_input() {
-  local __resultvar=$1
-  local result=''
+    local __resultvar=$1
+    local result=''
 
-  while ! valid_email "$result"; do
-    echo -n "* ${2}"
-    read -r result
+    while ! valid_email "$result"; do
+        echo -n "* ${2}"
+        read -r result
 
-    valid_email "$result" || print_error "${3}"
-  done
+        valid_email "$result" || print_error "${3}"
+    done
 
-  eval "$__resultvar="'$result'""
+    eval "$__resultvar="'$result'""
 }
 summary() {
-  clear
-  echo ""
-  echo -e "\033[1;94mDatabase credentials:\033[0m"
-  echo -e "\033[1;92m*\033[0m Database name: panel"
-  echo -e "\033[1;92m*\033[0m IPv4: 127.0.0.1"
-  echo -e "\033[1;92m*\033[0m Port: 3306"
-  echo -e "\033[1;92m*\033[0m User: pterodactyl, pterodactyluser"
-  echo -e "\033[1;92m*\033[0m Password: $MYSQL_PASSWORD"
-  echo ""
-  echo -e "\033[1;94mPanel credentials:\033[0m"
-  echo -e "\033[1;92m*\033[0m Email: $email"
-  echo -e "\033[1;92m*\033[0m Username: $user_username"
-  echo -e "\033[1;92m*\033[0m Password: $user_password"
-  echo ""
-  echo -e "\033[1;96mDomain/IPv4:\033[0m $FQDN"
-  echo ""
+    clear
+    echo ""
+    echo -e "\033[1;94mDatabase credentials:\033[0m"
+    echo -e "\033[1;92m*\033[0m Database name: panel"
+    echo -e "\033[1;92m*\033[0m IPv4: 127.0.0.1"
+    echo -e "\033[1;92m*\033[0m Port: 3306"
+    echo -e "\033[1;92m*\033[0m User: pterodactyl, pterodactyluser"
+    echo -e "\033[1;92m*\033[0m Password: $MYSQL_PASSWORD"
+    echo ""
+    echo -e "\033[1;94mPanel credentials:\033[0m"
+    echo -e "\033[1;92m*\033[0m Email: $email"
+    echo -e "\033[1;92m*\033[0m Username: $user_username"
+    echo -e "\033[1;92m*\033[0m Password: $user_password"
+    echo ""
+    echo -e "\033[1;96mDomain/IPv4:\033[0m $FQDN"
+    echo ""
 }
 
 echo ""
@@ -409,11 +408,10 @@ echo ""
 read -p "Please enter a number: " choice
 echo ""
 
-if [ $choice == "0" ]
-  then
-  echo -e "\033[0;96mCya\033[0m"
-  echo ""
-  exit
+if [ $choice == "0" ] then
+    echo -e "\033[0;96mCya\033[0m"
+    echo ""
+    exit
 fi
 
 if [ $choice == "1" ]
@@ -473,8 +471,7 @@ if [ $choice == "3" ]
     exit
 fi
 
-if [ $choice == "4" ]
-    then
+if [ $choice == "4" ] then
     updatePanel
     clear
     echo ""
@@ -483,78 +480,78 @@ if [ $choice == "4" ]
     exit
 fi
 
-if [ $choice == "5" ]
-  then
-  rm -rf /var/www/pterodactyl
-  rm /etc/systemd/system/pteroq.service
-  rm /etc/nginx/sites-available/pterodactyl.conf
-  rm /etc/nginx/sites-enabled/pterodactyl.conf
-  ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
-  systemctl stop wings
-  rm -rf /var/lib/pterodactyl
-  rm -rf /etc/pterodactyl
-  rm /usr/local/bin/wings
-  rm /etc/systemd/system/wings.service
-  rm /etc/apt/sources.list.d/mariadb.list
-  rm /etc/apt/sources.list.d/mariadb.list.old_1
-  rm /etc/apt/sources.list.d/mariadb.list.old_2
-  rm /etc/apt/sources.list.d/mariadb.list.old_3
-  rm /etc/apt/sources.list.d/mariadb.list.old_4
-  rm /etc/apt/sources.list.d/mariadb.list.old_5
-  mysql -u root -e "DROP USER 'pterodactyl'@'127.0.0.1';"
-  mysql -u root -e "DROP DATABASE panel;"
-  mysql -u root -e "DROP USER 'pterodactyluser'@'127.0.0.1';"
-  mysql -u root -e "DROP USER 'pterodactyluser'@'%';"
-  systemctl restart nginx
-  clear
-  echo ""
-  echo -e "\033[0;92mPanel uninstalled successfully\033[0m"
-  echo ""
-  exit
-fi
+if [ $choice == "5" ] then
+    rm -rf /var/www/pterodactyl
+    rm /etc/systemd/system/pteroq.service
+    rm /etc/nginx/sites-available/pterodactyl.conf
+    rm /etc/nginx/sites-enabled/pterodactyl.conf
+    ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
+    systemctl stop wings
+    rm -rf /var/lib/pterodactyl
+    rm -rf /etc/pterodactyl
+    rm /usr/local/bin/wings
+    rm /etc/systemd/system/wings.service
+    rm /etc/apt/sources.list.d/mariadb.list
+    rm /etc/apt/sources.list.d/mariadb.list.old_1
+    rm /etc/apt/sources.list.d/mariadb.list.old_2
+    rm /etc/apt/sources.list.d/mariadb.list.old_3
+    rm /etc/apt/sources.list.d/mariadb.list.old_4
+    rm /etc/apt/sources.list.d/mariadb.list.old_5
+    mysql -u root -e "DROP USER 'pterodactyl'@'127.0.0.1';"
+    mysql -u root -e "DROP DATABASE panel;"
+    mysql -u root -e "DROP USER 'pterodactyluser'@'127.0.0.1';"
+    mysql -u root -e "DROP USER 'pterodactyluser'@'%';"
+    systemctl restart nginx
+    clear
+    echo ""
+    echo -e "\033[0;92mPanel uninstalled successfully\033[0m"
+    echo ""
+    exit
+    fi
 
-if [ $choice == "6" ]
-  then
-  echo -n "Provide the URL of an image for the background: "
-  read -r BG_URL
-  
-  Theme=theme_2
-  BG_URL=$BG_URL
-  Icon_URL=""
+    if [ $choice == "6" ]
+    then
+    echo -n "Provide the URL of an image for the background: "
+    read -r BG_URL
+    
+    Theme=theme_2
+    BG_URL=$BG_URL
+    Icon_URL=""
 
-  [ -z "$BG_URL" ] && Theme=theme
+    [ -z "$BG_URL" ] && Theme=theme
 
-  required_input Icon_URL "Provide the URL of an image for the icon: " "URL cannot be empty"
-  cd /var/www/pterodactyl
-  
-  rm /var/www/pterodactyl/resources/scripts/theme.css
-  rm /var/www/pterodactyl/resources/scripts/index.tsx
-  rm /var/www/pterodactyl/resources/scripts/components/auth/LoginFormContainer.tsx
-  rm /var/www/pterodactyl/resources/views/templates/wrapper.blade.php
-  rm /var/www/pterodactyl/resources/views/layouts/admin.blade.php
+    required_input Icon_URL "Provide the URL of an image for the icon: " "URL cannot be empty"
+    cd /var/www/pterodactyl
+    
+    rm /var/www/pterodactyl/resources/scripts/theme.css
+    rm /var/www/pterodactyl/resources/scripts/index.tsx
+    rm /var/www/pterodactyl/resources/scripts/components/auth/LoginFormContainer.tsx
+    rm /var/www/pterodactyl/resources/views/templates/wrapper.blade.php
+    rm /var/www/pterodactyl/resources/views/layouts/admin.blade.php
 
-  curl -o /var/www/pterodactyl/resources/scripts/index.tsx $GitHub_Account/index.tsx
-  curl -o /var/www/pterodactyl/resources/scripts/theme.css $GitHub_Account/$Theme.css
-  curl -o /var/www/pterodactyl/resources/scripts/components/auth/LoginFormContainer.tsx $GitHub_Account/LoginFormContainer.tsx
-  curl -o /var/www/pterodactyl/resources/views/templates/wrapper.blade.php $GitHub_Account/wrapper.blade.php
-  curl -o /var/www/pterodactyl/resources/views/layouts/admin.blade.php $GitHub_Account/admin.blade.php
-  
-  sed -i -e "s@<URL>@${BG_URL}@g" /var/www/pterodactyl/resources/scripts/theme.css
-  sed -i -e "s@<URL>@${Icon_URL}@g" /var/www/pterodactyl/resources/scripts/components/auth/LoginFormContainer.tsx
-  sed -i -e "s@<URL>@${Icon_URL}@g" /var/www/pterodactyl/resources/views/templates/wrapper.blade.php
-  sed -i -e "s@<URL>@${Icon_URL}@g" /var/www/pterodactyl/resources/views/layouts/admin.blade.php
-  
-  apt remove -y nodejs
-  curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
-  apt update
-  apt install -y nodejs
-  npm i -g yarn
-  yarn
-  yarn build:production
-  php artisan optimize:clear
-  clear
-  echo ""
-  echo -e "\033[0;92mTheme installed successfully\033[0m"
-  echo ""
-  exit
+    curl -o /var/www/pterodactyl/resources/scripts/index.tsx $GitHub_Account/index.tsx
+    curl -o /var/www/pterodactyl/resources/scripts/theme.css $GitHub_Account/$Theme.css
+    curl -o /var/www/pterodactyl/resources/scripts/components/auth/LoginFormContainer.tsx $GitHub_Account/LoginFormContainer.tsx
+    curl -o /var/www/pterodactyl/resources/views/templates/wrapper.blade.php $GitHub_Account/wrapper.blade.php
+    curl -o /var/www/pterodactyl/resources/views/layouts/admin.blade.php $GitHub_Account/admin.blade.php
+    
+    sed -i -e "s@<URL>@${BG_URL}@g" /var/www/pterodactyl/resources/scripts/theme.css
+    sed -i -e "s@<URL>@${Icon_URL}@g" /var/www/pterodactyl/resources/scripts/components/auth/LoginFormContainer.tsx
+    sed -i -e "s@<URL>@${Icon_URL}@g" /var/www/pterodactyl/resources/views/templates/wrapper.blade.php
+    sed -i -e "s@<URL>@${Icon_URL}@g" /var/www/pterodactyl/resources/views/layouts/admin.blade.php
+    
+    apt remove -y nodejs
+    curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+    apt update
+    apt install -y nodejs
+    npm i -g yarn
+    yarn
+    yarn build:production
+    php artisan optimize:clear
+    rm -rf node_modules
+    clear
+    echo ""
+    echo -e "\033[0;92mTheme installed successfully\033[0m"
+    echo ""
+    exit
 fi
