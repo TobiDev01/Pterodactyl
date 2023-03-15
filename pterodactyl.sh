@@ -510,20 +510,23 @@ then
     echo -e "\033[0;92mPanel uninstalled successfully\033[0m"
     echo ""
     exit
-    fi
+fi
 
-    if [ $choice == "6" ]
-    then
+if [ $choice == "6" ]
+then
     echo -n "Provide the URL of an image for the background: "
     read -r BG_URL
     
     Theme=theme_2
     BG_URL=$BG_URL
-    Icon_URL=""
+    authIcon_URL=""
+    favIcon_URL=""
 
     [ -z "$BG_URL" ] && Theme=theme
 
-    required_input Icon_URL "Provide the URL of an image for the icon: " "URL cannot be empty"
+    required_input authIcon_URL "Provide the URL of an image for the auth icon: " "URL cannot be empty"
+    required_input favIcon_URL "Provide the URL of an image for the favicon: " "URL cannot be empty"
+
     cd /var/www/pterodactyl
     
     rm /var/www/pterodactyl/resources/scripts/theme.css
@@ -539,9 +542,9 @@ then
     curl -o /var/www/pterodactyl/resources/views/layouts/admin.blade.php $GitHub_Account/admin.blade.php
     
     sed -i -e "s@<URL>@${BG_URL}@g" /var/www/pterodactyl/resources/scripts/theme.css
-    sed -i -e "s@<URL>@${Icon_URL}@g" /var/www/pterodactyl/resources/scripts/components/auth/LoginFormContainer.tsx
-    sed -i -e "s@<URL>@${Icon_URL}@g" /var/www/pterodactyl/resources/views/templates/wrapper.blade.php
-    sed -i -e "s@<URL>@${Icon_URL}@g" /var/www/pterodactyl/resources/views/layouts/admin.blade.php
+    sed -i -e "s@<URL>@${authIcon_URL}@g" /var/www/pterodactyl/resources/scripts/components/auth/LoginFormContainer.tsx
+    sed -i -e "s@<URL>@${favIcon_URL}@g" /var/www/pterodactyl/resources/views/templates/wrapper.blade.php
+    sed -i -e "s@<URL>@${favIcon_URL}@g" /var/www/pterodactyl/resources/views/layouts/admin.blade.php
     
     apt remove -y nodejs
     curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
@@ -554,6 +557,7 @@ then
     rm -rf node_modules
     apt remove -y nodejs
     clear
+    
     echo ""
     echo -e "\033[0;92mTheme installed successfully\033[0m"
     echo ""
