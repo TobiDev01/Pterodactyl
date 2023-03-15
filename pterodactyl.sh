@@ -408,7 +408,8 @@ echo ""
 read -p "Please enter a number: " choice
 echo ""
 
-if [ $choice == "0" ] then
+if [ $choice == "0" ]
+then
     echo -e "\033[0;96mCya\033[0m"
     echo ""
     exit
@@ -471,7 +472,8 @@ if [ $choice == "3" ]
     exit
 fi
 
-if [ $choice == "4" ] then
+if [ $choice == "4" ]
+then
     updatePanel
     clear
     echo ""
@@ -480,7 +482,8 @@ if [ $choice == "4" ] then
     exit
 fi
 
-if [ $choice == "5" ] then
+if [ $choice == "5" ]
+then
     rm -rf /var/www/pterodactyl
     rm /etc/systemd/system/pteroq.service
     rm /etc/nginx/sites-available/pterodactyl.conf
