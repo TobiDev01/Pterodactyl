@@ -24,7 +24,7 @@ installPhpMyAdmin() {
     mkdir /var/www/phpmyadmin && mkdir /var/www/phpmyadmin/tmp/ && cd /var/www/phpmyadmin
     wget https://www.phpmyadmin.net/downloads/phpMyAdmin-latest-all-languages.tar.gz
     tar xvzf phpMyAdmin-latest-all-languages.tar.gz
-    rm xvzf phpMyAdmin-latest-all-languages.tar.gz
+    rm phpMyAdmin-latest-all-languages.tar.gz
     mv /var/www/phpmyadmin/phpMyAdmin-*-all-languages/* /var/www/phpmyadmin
     chown -R www-data:www-data *
     rm config.sample.inc.php
@@ -605,6 +605,7 @@ if [ $choice == "7" ]
 
     check_FQDN_SSL
     installPhpMyAdmin
+    clear
     echo ""
     echo -e "\033[0;92mphpMyAdmin installed successfully\033[0m"
     echo ""
