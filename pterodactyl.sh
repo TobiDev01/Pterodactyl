@@ -595,8 +595,10 @@ fi
 
 if [ $choice == "7" ]
     then
+    required_input blowfish_secret "Provide blowfish secret for phpMyAdmin: " "Blowfish secret cannot be empty"
+
     while [ -z "$FQDN" ]; do
-    echo -n "* Set the FQDN of this panel (phpmyadmin.example.com): "
+    echo -n "* Set the FQDN of this phpMyAdmin (phpmyadmin.example.com): "
     read -r FQDN
     [ -z "$FQDN" ] && print_error "FQDN cannot be empty"
     done
