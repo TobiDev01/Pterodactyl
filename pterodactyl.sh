@@ -9,6 +9,7 @@ clear
 
 GitHub_Account="https://raw.githubusercontent.com/TobiDev01/Pterodactyl/main/src"
 
+blowfish_secret=""
 FQDN=""
 MYSQL_PASSWORD=""
 SSL_AVAILABLE=false
@@ -21,20 +22,24 @@ email_regex="^(([A-Za-z0-9]+((\.|\-|\_|\+)?[A-Za-z0-9]?)*[A-Za-z0-9]+)|[A-Za-z0-
 installPhpMyAdmin() {
     cd
     mkdir /var/www/phpmyadmin && mkdir /var/www/phpmyadmin/tmp/ && cd /var/www/phpmyadmin
-    wget https://www.phpmyadmin.net/downloads/phpMyAdmin-latest-english.tar.gz
-    tar xvzf phpMyAdmin-latest-english.tar.gz
-    mv /var/www/phpmyadmin/phpMyAdmin-*-english/* /var/www/phpmyadmin
-    chown -R www-data:www-data * 
-    mkdir config
-    chmod o+rw config
-    cp config.sample.inc.php config/config.inc.php
-    chmod o+w config/config.inc.php
+    wget https://www.phpmyadmin.net/downloads/phpMyAdmin-latest-all-languages.tar.gz
+    tar xvzf phpMyAdmin-latest-all-languages.tar.gz
+    rm xvzf phpMyAdmin-latest-all-languages.tar.gz
+    mv /var/www/phpmyadmin/phpMyAdmin-*-all-languages/* /var/www/phpmyadmin
+    chown -R www-data:www-data *
+    rm config.sample.inc.php
+    curl -o /var/www/phpmyadmin/config.inc.php $GitHub_Account/config.inc.php
+    sed -i -e "s@<blowfish_secret>@${blowfish_secret}@g" /var/www/phpmyadmin/config.inc.php
     rm /etc/nginx/sites-enabled/phpmyadmin.conf
     curl -o /etc/nginx/sites-enabled/phpmyadmin.conf $GitHub_Account/phpmyadmin.conf
     sed -i -e "s@<domain>@${FQDN}@g" /etc/nginx/sites-enabled/phpmyadmin.conf
+    rm /etc/mysql/my.cnf
+    curl -o /etc/mysql/my.cnf $GitHub_Account/my.cnf
+    rm /etc/mysql/mariadb.conf.d/50-server.cnf
+    curl -o /etc/mysql/mariadb.conf.d/50-server.cnf $GitHub_Account/50-server.cnf
     systemctl restart nginx
-    rm -rf /var/www/phpmyadmin/config
     rm -rf /var/www/phpmyadmin/setup
+    cd
 }
 
 installPanel() {
@@ -426,6 +431,8 @@ echo "[3] Install panel & wings"
 echo "[4] Update panel"
 echo "[5] uninstall panel & wings"
 echo "[6] Install theme"
+echo "[7] Install phpMyAdmin"
+echo "[8] Uninstall phpMyAdmin"
 echo ""
 read -p "Please enter a number: " choice
 echo ""
@@ -598,6 +605,18 @@ if [ $choice == "7" ]
     installPhpMyAdmin
     echo ""
     echo -e "\033[0;92mphpMyAdmin installed successfully\033[0m"
+    echo ""
+    exit
+fi
+
+if [ $choice == "8" ]
+then
+    rm -rf /var/www/phpmyadmin
+    rm /etc/nginx/sites-enabled/phpmyadmin.conf
+    systemctl restart nginx
+    clear
+    echo ""
+    echo -e "\033[0;92mphpMyAdmin uninstalled successfully\033[0m"
     echo ""
     exit
 fi
