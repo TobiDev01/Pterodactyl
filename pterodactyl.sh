@@ -18,6 +18,25 @@ user_username=""
 user_password=""
 email_regex="^(([A-Za-z0-9]+((\.|\-|\_|\+)?[A-Za-z0-9]?)*[A-Za-z0-9]+)|[A-Za-z0-9]+)@(([A-Za-z0-9]+)+((\.|\-|\_)?([A-Za-z0-9]+)+)*)+\.([A-Za-z]{2,})+$"
 
+installPhpMyAdmin() {
+    cd
+    mkdir /var/www/phpmyadmin && mkdir /var/www/phpmyadmin/tmp/ && cd /var/www/phpmyadmin
+    wget https://www.phpmyadmin.net/downloads/phpMyAdmin-latest-english.tar.gz
+    tar xvzf phpMyAdmin-latest-english.tar.gz
+    mv /var/www/phpmyadmin/phpMyAdmin-*-english/* /var/www/phpmyadmin
+    chown -R www-data:www-data * 
+    mkdir config
+    chmod o+rw config
+    cp config.sample.inc.php config/config.inc.php
+    chmod o+w config/config.inc.php
+    rm /etc/nginx/sites-enabled/phpmyadmin.conf
+    curl -o /etc/nginx/sites-enabled/phpmyadmin.conf $GitHub_Account/phpmyadmin.conf
+    sed -i -e "s@<domain>@${FQDN}@g" /etc/nginx/sites-enabled/phpmyadmin.conf
+    systemctl restart nginx
+    rm -rf /var/www/phpmyadmin/config
+    rm -rf /var/www/phpmyadmin/setup
+}
+
 installPanel() {
     cd
     apt -y install software-properties-common curl apt-transport-https ca-certificates gnupg
@@ -116,11 +135,9 @@ installPanel() {
     systemctl enable --now redis-server
     systemctl enable --now pteroq.service
     rm /etc/nginx/sites-enabled/default
-    rm /etc/nginx/sites-available/pterodactyl.conf
     rm /etc/nginx/sites-enabled/pterodactyl.conf
-    curl -o /etc/nginx/sites-available/pterodactyl.conf $GitHub_Account/$Pterodactyl_conf
-    sed -i -e "s@<domain>@${FQDN}@g" /etc/nginx/sites-available/pterodactyl.conf
-    ln -s /etc/nginx/sites-available/pterodactyl.conf /etc/nginx/sites-enabled/pterodactyl.conf
+    curl -o /etc/nginx/sites-enabled/pterodactyl.conf $GitHub_Account/$Pterodactyl_conf
+    sed -i -e "s@<domain>@${FQDN}@g" /etc/nginx/sites-enabled/pterodactyl.conf
     systemctl restart nginx
     cd
 }
@@ -279,11 +296,9 @@ installPanelAndwings() {
     systemctl enable --now redis-server
     systemctl enable --now pteroq.service
     rm /etc/nginx/sites-enabled/default
-    rm /etc/nginx/sites-available/pterodactyl.conf
     rm /etc/nginx/sites-enabled/pterodactyl.conf
-    curl -o /etc/nginx/sites-available/pterodactyl.conf $GitHub_Account/$Pterodactyl_conf
-    sed -i -e "s@<domain>@${FQDN}@g" /etc/nginx/sites-available/pterodactyl.conf
-    ln -s /etc/nginx/sites-available/pterodactyl.conf /etc/nginx/sites-enabled/pterodactyl.conf
+    curl -o /etc/nginx/sites-enabled/pterodactyl.conf $GitHub_Account/$Pterodactyl_conf
+    sed -i -e "s@<domain>@${FQDN}@g" /etc/nginx/sites-enabled/pterodactyl.conf
     systemctl restart nginx
     curl -sSL https://get.docker.com/ | CHANNEL=stable bash
     systemctl enable --now docker
@@ -306,6 +321,7 @@ print_error() {
     echo -e "* ${COLOR_RED}ERROR${COLOR_NC}: $1"
     echo ""
 }
+
 required_input() {
     local __resultvar=$1
     local result=''
@@ -323,18 +339,22 @@ required_input() {
 
     eval "$__resultvar="'$result'""
 }
+
 valid_email() {
     [[ $1 =~ ${email_regex} ]]
 }
+
 invalid_ip() {
     ip route get "$1" >/dev/null 2>&1
     echo $?
 }
+
 check_FQDN_SSL() {
     if [[ $(invalid_ip "$FQDN") == 1 && $FQDN != 'localhost' ]]; then
         SSL_AVAILABLE=true
     fi
 }
+
 password_input() {
     local __resultvar=$1
     local result=''
@@ -364,6 +384,7 @@ password_input() {
 
     eval "$__resultvar="'$result'""
 }
+
 email_input() {
     local __resultvar=$1
     local result=''
@@ -377,6 +398,7 @@ email_input() {
 
     eval "$__resultvar="'$result'""
 }
+
 summary() {
     clear
     echo ""
@@ -560,6 +582,22 @@ then
     
     echo ""
     echo -e "\033[0;92mTheme installed successfully\033[0m"
+    echo ""
+    exit
+fi
+
+if [ $choice == "7" ]
+    then
+    while [ -z "$FQDN" ]; do
+    echo -n "* Set the FQDN of this panel (phpmyadmin.example.com): "
+    read -r FQDN
+    [ -z "$FQDN" ] && print_error "FQDN cannot be empty"
+    done
+
+    check_FQDN_SSL
+    installPhpMyAdmin
+    echo ""
+    echo -e "\033[0;92mphpMyAdmin installed successfully\033[0m"
     echo ""
     exit
 fi
