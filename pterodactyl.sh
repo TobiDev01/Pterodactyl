@@ -20,50 +20,75 @@ user_password=""
 email_regex="^(([A-Za-z0-9]+((\.|\-|\_|\+)?[A-Za-z0-9]?)*[A-Za-z0-9]+)|[A-Za-z0-9]+)@(([A-Za-z0-9]+)+((\.|\-|\_)?([A-Za-z0-9]+)+)*)+\.([A-Za-z]{2,})+$"
 
 installPhpMyAdmin() {
-    cd
-    mkdir /var/www/phpmyadmin && mkdir /var/www/phpmyadmin/tmp/ && cd /var/www/phpmyadmin
+    cd /var/www/pterodactyl/public/
+
+    rm /etc/mysql/my.cnf
+    rm /etc/mysql/mariadb.conf.d/50-server.cnf
+
+    mkdir pma
+    cd pma
+
     wget https://www.phpmyadmin.net/downloads/phpMyAdmin-latest-all-languages.tar.gz
     tar xvzf phpMyAdmin-latest-all-languages.tar.gz
-    rm phpMyAdmin-latest-all-languages.tar.gz
-    mv /var/www/phpmyadmin/phpMyAdmin-*-all-languages/* /var/www/phpmyadmin
-    chown -R www-data:www-data *
+
+    mv phpMyAdmin-*-all-languages/* /var/www/pterodactyl/public/pma
+
+    rm -rf phpM*
+    #rm phpMyAdmin-latest-all-languages.tar.gz
+
+    mkdir /var/www/pterodactyl/public/pma/tmp
+    
+    chmod -R 777 /var/www/pterodactyl/public/pma/tmp
+
     rm config.sample.inc.php
+
     curl -o /var/www/phpmyadmin/config.inc.php $GitHub_Account/config.inc.php
     sed -i -e "s@<blowfish_secret>@${blowfish_secret}@g" /var/www/phpmyadmin/config.inc.php
-    rm /etc/nginx/sites-enabled/phpmyadmin.conf
-    curl -o /etc/nginx/sites-enabled/phpmyadmin.conf $GitHub_Account/phpmyadmin.conf
-    sed -i -e "s@<domain>@${FQDN}@g" /etc/nginx/sites-enabled/phpmyadmin.conf
-    rm /etc/mysql/my.cnf
-    curl -o /etc/mysql/my.cnf $GitHub_Account/my.cnf
-    rm /etc/mysql/mariadb.conf.d/50-server.cnf
-    curl -o /etc/mysql/mariadb.conf.d/50-server.cnf $GitHub_Account/50-server.cnf
-    systemctl restart nginx
+
     rm -rf /var/www/phpmyadmin/setup
+
     cd
 }
 
 installPanel() {
     cd
-    apt -y install software-properties-common curl apt-transport-https ca-certificates gnupg
-    LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
-    add-apt-repository ppa:redislabs/redis -y
+
     rm /etc/apt/sources.list.d/mariadb.list
     rm /etc/apt/sources.list.d/mariadb.list.old_1
     rm /etc/apt/sources.list.d/mariadb.list.old_2
     rm /etc/apt/sources.list.d/mariadb.list.old_3
     rm /etc/apt/sources.list.d/mariadb.list.old_4
     rm /etc/apt/sources.list.d/mariadb.list.old_5
-    curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
+
+    rm /etc/mysql/my.cnf
+    rm /etc/mysql/mariadb.conf.d/50-server.cnf
+
+    rm /etc/systemd/system/pteroq.service
+
+    rm /etc/nginx/sites-enabled/default
+    rm /etc/nginx/sites-enabled/pterodactyl.conf
+
+    apt -y install software-properties-common curl apt-transport-https ca-certificates gnupg
+
+    LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
+
+    curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
+    echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list
+    
     apt update
-    apt-add-repository universe
+
     apt -y install php8.1 php8.1-{cli,gd,mysql,pdo,mbstring,tokenizer,bcmath,xml,fpm,curl,zip} mariadb-server nginx tar unzip git redis-server
+    
     curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
+
     mkdir -p /var/www/pterodactyl
     cd /var/www/pterodactyl
+    
     curl -Lo panel.tar.gz https://github.com/pterodactyl/panel/releases/latest/download/panel.tar.gz
     tar -xzvf panel.tar.gz
-    rm /var/www/pterodactyl/panel.tar.gz
     chmod -R 755 storage/* bootstrap/cache/
+
+    rm /var/www/pterodactyl/panel.tar.gz
 
     mysql -u root -e "DROP USER 'pterodactyl'@'127.0.0.1';"
     mysql -u root -e "DROP DATABASE panel;"
@@ -78,26 +103,27 @@ installPanel() {
     mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'pterodactyluser'@'%' WITH GRANT OPTION;"
     mysql -u root -e "flush privileges;"
 
-    rm /etc/mysql/my.cnf
     curl -o /etc/mysql/my.cnf $GitHub_Account/my.cnf
-    rm /etc/mysql/mariadb.conf.d/50-server.cnf
     curl -o /etc/mysql/mariadb.conf.d/50-server.cnf $GitHub_Account/50-server.cnf
+
     systemctl restart mysql
     systemctl restart mariadb
+
     cp .env.example .env
-    COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --optimize-autoloader
+    COMPOSER_ALLOW_SUPERUSER=1
+    composer install --no-dev --optimize-autoloader
     php artisan key:generate --force
         
-    app_url="http://$FQDN"
-    if [ "$SSL_AVAILABLE" == true ]
-        then
-        app_url="https://$FQDN"
-        Pterodactyl_conf="pterodactyl.conf"
-        apt update
-        apt install -y certbot
-        apt install -y python3-certbot-nginx
-        certbot certonly --nginx --redirect --no-eff-email --register-unsafely-without-email -d "$FQDN"
-    fi
+    #app_url="http://$FQDN"
+    #if [ "$SSL_AVAILABLE" == true ]
+    #    then
+    #    app_url="https://$FQDN"
+    #    Pterodactyl_conf="pterodactyl.conf"
+    #    apt update
+    #    apt install -y certbot
+    #    apt install -y python3-certbot-nginx
+    #    certbot certonly --nginx --redirect --no-eff-email --register-unsafely-without-email -d "$FQDN"
+    #fi
 
     php artisan p:environment:setup \
     --author="$email" \
@@ -135,39 +161,55 @@ installPanel() {
         echo "* * * * * php /var/www/pterodactyl/artisan schedule:run >> /dev/null 2>&1"
     } | crontab -
 
-    rm /etc/systemd/system/pteroq.service
     curl -o /etc/systemd/system/pteroq.service $GitHub_Account/pteroq.service
+
     systemctl enable --now redis-server
     systemctl enable --now pteroq.service
-    rm /etc/nginx/sites-enabled/default
-    rm /etc/nginx/sites-enabled/pterodactyl.conf
+    
     curl -o /etc/nginx/sites-enabled/pterodactyl.conf $GitHub_Account/$Pterodactyl_conf
     sed -i -e "s@<domain>@${FQDN}@g" /etc/nginx/sites-enabled/pterodactyl.conf
+
     systemctl restart nginx
+
     cd
 }
 
 installWings() {
     cd
+
     rm /etc/apt/sources.list.d/mariadb.list
     rm /etc/apt/sources.list.d/mariadb.list.old_1
     rm /etc/apt/sources.list.d/mariadb.list.old_2
     rm /etc/apt/sources.list.d/mariadb.list.old_3
     rm /etc/apt/sources.list.d/mariadb.list.old_4
     rm /etc/apt/sources.list.d/mariadb.list.old_5
-    curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
-    apt update
-    apt-add-repository universe
-    apt -y install php8.1 php8.1-{cli,gd,mysql,pdo,mbstring,tokenizer,bcmath,xml,fpm,curl,zip} mariadb-server nginx tar unzip git redis-server
+
+    rm /etc/default/grub
+
+    rm /etc/mysql/my.cnf
+    rm /etc/mysql/mariadb.conf.d/50-server.cnf
+
+    curl -sSL https://get.docker.com/ | CHANNEL=stable bash
+    systemctl enable --now docker
+
+    curl -o /etc/default/grub $GitHub_Account/grub
+    update-grub
     
+    mkdir -p /etc/pterodactyl
+    curl -L -o /usr/local/bin/wings "https://github.com/pterodactyl/wings/releases/latest/download/wings_linux_$([[ "$(uname -m)" == "x86_64" ]] && echo "amd64" || echo "arm64")"
+    chmod u+x /usr/local/bin/wings
+    
+    apt update
+
+    curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
+
     mysql -u root -e "CREATE USER 'pterodactyluser'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';"
     mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'pterodactyluser'@'%' WITH GRANT OPTION;"
     mysql -u root -e "flush privileges;"
 
-    rm /etc/mysql/my.cnf
     curl -o /etc/mysql/my.cnf $GitHub_Account/my.cnf
-    rm /etc/mysql/mariadb.conf.d/50-server.cnf
     curl -o /etc/mysql/mariadb.conf.d/50-server.cnf $GitHub_Account/50-server.cnf
+    
     systemctl restart mysql
     systemctl restart mariadb
 
@@ -179,15 +221,7 @@ installWings() {
         apt install -y python3-certbot-nginx
         certbot certonly --nginx --redirect --no-eff-email --register-unsafely-without-email -d "$FQDN"
     fi
-
-    curl -sSL https://get.docker.com/ | CHANNEL=stable bash
-    systemctl enable --now docker
-    rm /etc/default/grub
-    curl -o /etc/default/grub $GitHub_Account/grub
-    update-grub
-    mkdir -p /etc/pterodactyl
-    curl -L -o /usr/local/bin/wings "https://github.com/pterodactyl/wings/releases/latest/download/wings_linux_$([[ "$(uname -m)" == "x86_64" ]] && echo "amd64" || echo "arm64")"
-    chmod u+x /usr/local/bin/wings
+    
     rm /etc/systemd/system/wings.service
     curl -o /etc/systemd/system/wings.service $GitHub_Account/wings.service
     cd
