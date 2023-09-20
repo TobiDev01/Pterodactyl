@@ -254,7 +254,7 @@ installPanelAndwings() {
     rm /etc/apt/sources.list.d/mariadb.list.old_5
     curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
     apt update
-    apt-add-repository universe
+    
     apt -y install php8.1 php8.1-{cli,gd,mysql,pdo,mbstring,tokenizer,bcmath,xml,fpm,curl,zip} mariadb-server nginx tar unzip git redis-server
     curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
     mkdir -p /var/www/pterodactyl
@@ -283,16 +283,16 @@ installPanelAndwings() {
     COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --optimize-autoloader
     php artisan key:generate --force
         
-    app_url="http://$FQDN"
-    if [ "$SSL_AVAILABLE" == true ]
-        then
-        app_url="https://$FQDN"
-        Pterodactyl_conf="pterodactyl.conf"
-        apt update
-        apt install -y certbot
-        apt install -y python3-certbot-nginx
-        certbot certonly --nginx --redirect --no-eff-email --register-unsafely-without-email -d "$FQDN"
-    fi
+    #app_url="http://$FQDN"
+    #if [ "$SSL_AVAILABLE" == true ]
+    #    then
+    #    app_url="https://$FQDN"
+    #    Pterodactyl_conf="pterodactyl.conf"
+    #    apt update
+    #    apt install -y certbot
+    #    apt install -y python3-certbot-nginx
+    #    certbot certonly --nginx --redirect --no-eff-email --register-unsafely-without-email -d "$FQDN"
+    #fi
 
     php artisan p:environment:setup \
     --author="$email" \
