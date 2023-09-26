@@ -114,16 +114,16 @@ installPanel() {
     composer install --no-dev --optimize-autoloader
     php artisan key:generate --force
         
-    #app_url="http://$FQDN"
-    #if [ "$SSL_AVAILABLE" == true ]
-    #    then
-    #    app_url="https://$FQDN"
-    #    Pterodactyl_conf="pterodactyl.conf"
-    #    apt update
-    #    apt install -y certbot
-    #    apt install -y python3-certbot-nginx
-    #    certbot certonly --nginx --redirect --no-eff-email --register-unsafely-without-email -d "$FQDN"
-    #fi
+    app_url="http://$FQDN"
+    if [ "$SSL_AVAILABLE" == true ]
+        then
+        app_url="https://$FQDN"
+        Pterodactyl_conf="pterodactyl.conf"
+        apt update
+        apt install -y certbot
+        apt install -y python3-certbot-nginx
+        certbot certonly --nginx --redirect --no-eff-email --register-unsafely-without-email -d "$FQDN"
+    fi
 
     php artisan p:environment:setup \
     --author="$email" \
@@ -283,16 +283,16 @@ installPanelAndwings() {
     COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --optimize-autoloader
     php artisan key:generate --force
         
-    #app_url="http://$FQDN"
-    #if [ "$SSL_AVAILABLE" == true ]
-    #    then
-    #    app_url="https://$FQDN"
-    #    Pterodactyl_conf="pterodactyl.conf"
-    #    apt update
-    #    apt install -y certbot
-    #    apt install -y python3-certbot-nginx
-    #    certbot certonly --nginx --redirect --no-eff-email --register-unsafely-without-email -d "$FQDN"
-    #fi
+    app_url="http://$FQDN"
+    if [ "$SSL_AVAILABLE" == true ]
+        then
+        app_url="https://$FQDN"
+        Pterodactyl_conf="pterodactyl.conf"
+        apt update
+        apt install -y certbot
+        apt install -y python3-certbot-nginx
+        certbot certonly --nginx --redirect --no-eff-email --register-unsafely-without-email -d "$FQDN"
+    fi
 
     php artisan p:environment:setup \
     --author="$email" \
