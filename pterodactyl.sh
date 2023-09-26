@@ -631,13 +631,6 @@ if [ $choice == "7" ]
     then
     required_input blowfish_secret "Provide blowfish secret for phpMyAdmin: " "Blowfish secret cannot be empty"
 
-    while [ -z "$FQDN" ]; do
-    echo -n "* Set the FQDN of this phpMyAdmin (phpmyadmin.example.com): "
-    read -r FQDN
-    [ -z "$FQDN" ] && print_error "FQDN cannot be empty"
-    done
-
-    check_FQDN_SSL
     installPhpMyAdmin
     clear
     echo ""
@@ -648,9 +641,7 @@ fi
 
 if [ $choice == "8" ]
 then
-    rm -rf /var/www/phpmyadmin
-    rm /etc/nginx/sites-enabled/phpmyadmin.conf
-    systemctl restart nginx
+    rm -rf /var/pterodactyl/public/pma
     clear
     echo ""
     echo -e "\033[0;92mphpMyAdmin uninstalled successfully\033[0m"
