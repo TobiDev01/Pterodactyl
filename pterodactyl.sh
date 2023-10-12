@@ -34,7 +34,6 @@ installPhpMyAdmin() {
     mv phpMyAdmin-*-all-languages/* /var/www/pterodactyl/public/pma
 
     rm -rf phpM*
-    #rm phpMyAdmin-latest-all-languages.tar.gz
 
     mkdir /var/www/pterodactyl/public/pma/tmp
     
@@ -42,10 +41,10 @@ installPhpMyAdmin() {
 
     rm config.sample.inc.php
 
-    curl -o /var/www/phpmyadmin/config.inc.php $GitHub_Account/config.inc.php
-    sed -i -e "s@<blowfish_secret>@${blowfish_secret}@g" /var/www/phpmyadmin/config.inc.php
+    curl -o /var/www/pterodactyl/public/pma/config.inc.php $GitHub_Account/config.inc.php
+    sed -i -e "s@<blowfish_secret>@${blowfish_secret}@g" /var/www/pterodactyl/public/pma/config.inc.php
 
-    rm -rf /var/www/phpmyadmin/setup
+    rm -rf /var/www/pterodactyl/public/pma/setup
 
     cd
 }
@@ -304,7 +303,8 @@ installPanelAndwings() {
     --redis-host="localhost" \
     --redis-pass="null" \
     --redis-port="6379" \
-    --settings-ui=true
+    --settings-ui=true \
+    --telemetry=true
 
     php artisan p:environment:database \
     --host="127.0.0.1" \
