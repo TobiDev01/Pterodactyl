@@ -11,8 +11,10 @@ GitHub_Account="https://raw.githubusercontent.com/TobiDev01/Pterodactyl/main/src
 
 blowfish_secret=""
 FQDN=""
+FQDN_Node=""
 MYSQL_PASSWORD=""
 SSL_AVAILABLE=false
+Node_SSL_AVAILABLE=false
 Pterodactyl_conf="pterodactyl-no_ssl.conf"
 email=""
 user_username=""
@@ -134,7 +136,8 @@ installPanel() {
     --redis-host="localhost" \
     --redis-pass="null" \
     --redis-port="6379" \
-    --settings-ui=true
+    --settings-ui=true \
+    --telemetry=true
 
     php artisan p:environment:database \
     --host="127.0.0.1" \
@@ -223,6 +226,7 @@ installWings() {
     
     rm /etc/systemd/system/wings.service
     curl -o /etc/systemd/system/wings.service $GitHub_Account/wings.service
+    echo > config.yml
     cd
 }
 
@@ -293,6 +297,14 @@ installPanelAndwings() {
         certbot certonly --nginx --redirect --no-eff-email --register-unsafely-without-email -d "$FQDN"
     fi
 
+    if [ "$Node_SSL_AVAILABLE" == true ]
+        then
+        apt update
+        apt install -y certbot
+        apt install -y python3-certbot-nginx
+        certbot certonly --nginx --redirect --no-eff-email --register-unsafely-without-email -d "$FQDN_Node"
+    fi
+
     php artisan p:environment:setup \
     --author="$email" \
     --url="$app_url" \
@@ -332,23 +344,36 @@ installPanelAndwings() {
 
     rm /etc/systemd/system/pteroq.service
     curl -o /etc/systemd/system/pteroq.service $GitHub_Account/pteroq.service
+
     systemctl enable --now redis-server
     systemctl enable --now pteroq.service
+
     rm /etc/nginx/sites-enabled/default
     rm /etc/nginx/sites-enabled/pterodactyl.conf
+
     curl -o /etc/nginx/sites-enabled/pterodactyl.conf $GitHub_Account/$Pterodactyl_conf
     sed -i -e "s@<domain>@${FQDN}@g" /etc/nginx/sites-enabled/pterodactyl.conf
+
     systemctl restart nginx
+
     curl -sSL https://get.docker.com/ | CHANNEL=stable bash
+
     systemctl enable --now docker
+
     rm /etc/default/grub
     curl -o /etc/default/grub $GitHub_Account/grub
     update-grub
+    
     mkdir -p /etc/pterodactyl
+    
     curl -L -o /usr/local/bin/wings "https://github.com/pterodactyl/wings/releases/latest/download/wings_linux_$([[ "$(uname -m)" == "x86_64" ]] && echo "amd64" || echo "arm64")"
     chmod u+x /usr/local/bin/wings
+    
     rm /etc/systemd/system/wings.service
     curl -o /etc/systemd/system/wings.service $GitHub_Account/wings.service
+    
+    echo > config.yml
+
     cd
 }
 
@@ -391,6 +416,11 @@ invalid_ip() {
 check_FQDN_SSL() {
     if [[ $(invalid_ip "$FQDN") == 1 && $FQDN != 'localhost' ]]; then
         SSL_AVAILABLE=true
+    fi
+}
+check_FQDN_Node_SSL() {
+    if [[ $(invalid_ip "$FQDN_Node") == 1 && $FQDN_Node != 'localhost' ]]; then
+        Node_SSL_AVAILABLE=true
     fi
 }
 
@@ -502,7 +532,7 @@ if [ $choice == "2" ]
     password_input MYSQL_PASSWORD "Provide password for database: " "MySQL password cannot be empty"
 
     while [ -z "$FQDN" ]; do
-    echo -n "* Set the FQDN of this panel (panel.example.com | 0.0.0.0): "
+    echo -n "* Set the FQDN of the node (node.example.com | 0.0.0.0): "
     read -r FQDN
     [ -z "$FQDN" ] && print_error "FQDN cannot be empty"
     done
@@ -527,6 +557,12 @@ if [ $choice == "3" ]
     echo -n "* Set the FQDN of this panel (panel.example.com | 0.0.0.0): "
     read -r FQDN
     [ -z "$FQDN" ] && print_error "FQDN cannot be empty"
+    done
+
+    while [ -z "$FQDN_Node" ]; do
+    echo -n "* Set the FQDN of the node (node.example.com | 0.0.0.0): "
+    read -r FQDN_Node
+    [ -z "$FQDN_Node" ] && print_error "FQDN cannot be empty"
     done
 
     check_FQDN_SSL
