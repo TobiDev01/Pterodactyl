@@ -6,7 +6,7 @@ bash <(curl https://raw.githubusercontent.com/TobiDev01/Pterodactyl/main/pteroda
 ```
 
 Options:
-
+```js
 [0] Exit
 
 [1] Install panel
@@ -23,4 +23,4 @@ Options:
 
 [7] Install phpMyAdmin
 
-[8] Uninstall phpMyAdmin
+[8] Uninstall phpMyAdmin```
