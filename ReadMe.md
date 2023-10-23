@@ -8,11 +8,19 @@ bash <(curl https://raw.githubusercontent.com/TobiDev01/Pterodactyl/main/pteroda
 Options:
 
 [0] Exit
+
 [1] Install panel
+
 [2] Install wings
+
 [3] Install panel & wings
+
 [4] Update panel
+
 [5] uninstall panel & wings
+
 [6] Install theme
+
 [7] Install phpMyAdmin
+
 [8] Uninstall phpMyAdmin
