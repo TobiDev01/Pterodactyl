@@ -23,4 +23,5 @@ Options:
 
 [7] Install phpMyAdmin
 
-[8] Uninstall phpMyAdmin```
+[8] Uninstall phpMyAdmin
+```
