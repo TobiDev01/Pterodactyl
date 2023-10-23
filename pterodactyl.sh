@@ -226,7 +226,10 @@ installWings() {
     
     rm /etc/systemd/system/wings.service
     curl -o /etc/systemd/system/wings.service $GitHub_Account/wings.service
+
+    cd /etc/pterodactyl
     echo > config.yml
+    
     cd
 }
 
@@ -372,6 +375,7 @@ installPanelAndwings() {
     rm /etc/systemd/system/wings.service
     curl -o /etc/systemd/system/wings.service $GitHub_Account/wings.service
     
+    cd /etc/pterodactyl
     echo > config.yml
 
     cd
@@ -566,6 +570,7 @@ if [ $choice == "3" ]
     done
 
     check_FQDN_SSL
+    check_FQDN_Node_SSL
     installPanelAndwings
     summary
     exit
