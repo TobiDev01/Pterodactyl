@@ -651,13 +651,22 @@ then
     sed -i -e "s@<URL>@${favIcon_URL}@g" /var/www/pterodactyl/resources/views/layouts/admin.blade.php
     
     apt remove -y nodejs
-    curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+
+    mkdir -p /etc/apt/keyrings
+    curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+    echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_16.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
+    
     apt update
     apt install -y nodejs
+
     npm i -g yarn
+    
     yarn
+
     yarn build:production
+
     php artisan optimize:clear
+    
     rm -rf node_modules
     apt remove -y nodejs
     clear
