@@ -91,18 +91,18 @@ installPanel() {
 
     rm /var/www/pterodactyl/panel.tar.gz
 
-    mysql -u root -e "DROP USER 'pterodactyl'@'127.0.0.1';"
-    mysql -u root -e "DROP DATABASE panel;"
-    mysql -u root -e "DROP USER 'pterodactyluser'@'127.0.0.1';"
-    mysql -u root -e "DROP USER 'pterodactyluser'@'%';"
-    mysql -u root -e "CREATE USER 'pterodactyl'@'127.0.0.1' IDENTIFIED BY '${MYSQL_PASSWORD}';"
-    mysql -u root -e "CREATE DATABASE panel;"
-    mysql -u root -e "GRANT ALL PRIVILEGES ON panel.* TO 'pterodactyl'@'127.0.0.1' WITH GRANT OPTION;"
-    mysql -u root -e "CREATE USER 'pterodactyluser'@'127.0.0.1' IDENTIFIED BY '${MYSQL_PASSWORD}';"
-    mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'pterodactyluser'@'127.0.0.1' WITH GRANT OPTION;"
-    mysql -u root -e "CREATE USER 'pterodactyluser'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';"
-    mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'pterodactyluser'@'%' WITH GRANT OPTION;"
-    mysql -u root -e "flush privileges;"
+    mariadb -u root -e "DROP USER 'pterodactyl'@'127.0.0.1';"
+    mariadb -u root -e "DROP DATABASE panel;"
+    mariadb -u root -e "DROP USER 'pterodactyluser'@'127.0.0.1';"
+    mariadb -u root -e "DROP USER 'pterodactyluser'@'%';"
+    mariadb -u root -e "CREATE USER 'pterodactyl'@'127.0.0.1' IDENTIFIED BY '${MYSQL_PASSWORD}';"
+    mariadb -u root -e "CREATE DATABASE panel;"
+    mariadb -u root -e "GRANT ALL PRIVILEGES ON panel.* TO 'pterodactyl'@'127.0.0.1' WITH GRANT OPTION;"
+    mariadb -u root -e "CREATE USER 'pterodactyluser'@'127.0.0.1' IDENTIFIED BY '${MYSQL_PASSWORD}';"
+    mariadb -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'pterodactyluser'@'127.0.0.1' WITH GRANT OPTION;"
+    mariadb -u root -e "CREATE USER 'pterodactyluser'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';"
+    mariadb -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'pterodactyluser'@'%' WITH GRANT OPTION;"
+    mariadb -u root -e "flush privileges;"
 
     curl -o /etc/mysql/my.cnf $GitHub_Account/my.cnf
     curl -o /etc/mysql/mariadb.conf.d/50-server.cnf $GitHub_Account/50-server.cnf
@@ -205,9 +205,9 @@ installWings() {
 
     curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
 
-    mysql -u root -e "CREATE USER 'pterodactyluser'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';"
-    mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'pterodactyluser'@'%' WITH GRANT OPTION;"
-    mysql -u root -e "flush privileges;"
+    mariadb -u root -e "CREATE USER 'pterodactyluser'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';"
+    mariadb -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'pterodactyluser'@'%' WITH GRANT OPTION;"
+    mariadb -u root -e "flush privileges;"
 
     curl -o /etc/mysql/my.cnf $GitHub_Account/my.cnf
     curl -o /etc/mysql/mariadb.conf.d/50-server.cnf $GitHub_Account/50-server.cnf
@@ -270,14 +270,14 @@ installPanelAndwings() {
     rm /var/www/pterodactyl/panel.tar.gz
     chmod -R 755 storage/* bootstrap/cache/
 
-    mysql -u root -e "CREATE USER 'pterodactyl'@'127.0.0.1' IDENTIFIED BY '${MYSQL_PASSWORD}';"
-    mysql -u root -e "CREATE DATABASE panel;"
-    mysql -u root -e "GRANT ALL PRIVILEGES ON panel.* TO 'pterodactyl'@'127.0.0.1' WITH GRANT OPTION;"
-    mysql -u root -e "CREATE USER 'pterodactyluser'@'127.0.0.1' IDENTIFIED BY '${MYSQL_PASSWORD}';"
-    mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'pterodactyluser'@'127.0.0.1' WITH GRANT OPTION;"
-    mysql -u root -e "CREATE USER 'pterodactyluser'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';"
-    mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'pterodactyluser'@'%' WITH GRANT OPTION;"
-    mysql -u root -e "flush privileges;"
+    mariadb -u root -e "CREATE USER 'pterodactyl'@'127.0.0.1' IDENTIFIED BY '${MYSQL_PASSWORD}';"
+    mariadb -u root -e "CREATE DATABASE panel;"
+    mariadb -u root -e "GRANT ALL PRIVILEGES ON panel.* TO 'pterodactyl'@'127.0.0.1' WITH GRANT OPTION;"
+    mariadb -u root -e "CREATE USER 'pterodactyluser'@'127.0.0.1' IDENTIFIED BY '${MYSQL_PASSWORD}';"
+    mariadb -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'pterodactyluser'@'127.0.0.1' WITH GRANT OPTION;"
+    mariadb -u root -e "CREATE USER 'pterodactyluser'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';"
+    mariadb -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'pterodactyluser'@'%' WITH GRANT OPTION;"
+    mariadb -u root -e "flush privileges;"
 
     rm /etc/mysql/my.cnf
     curl -o /etc/mysql/my.cnf $GitHub_Account/my.cnf
@@ -604,10 +604,10 @@ then
     rm /etc/apt/sources.list.d/mariadb.list.old_3
     rm /etc/apt/sources.list.d/mariadb.list.old_4
     rm /etc/apt/sources.list.d/mariadb.list.old_5
-    mysql -u root -e "DROP USER 'pterodactyl'@'127.0.0.1';"
-    mysql -u root -e "DROP DATABASE panel;"
-    mysql -u root -e "DROP USER 'pterodactyluser'@'127.0.0.1';"
-    mysql -u root -e "DROP USER 'pterodactyluser'@'%';"
+    mariadb -u root -e "DROP USER 'pterodactyl'@'127.0.0.1';"
+    mariadb -u root -e "DROP DATABASE panel;"
+    mariadb -u root -e "DROP USER 'pterodactyluser'@'127.0.0.1';"
+    mariadb -u root -e "DROP USER 'pterodactyluser'@'%';"
     systemctl restart nginx
     clear
     echo ""
