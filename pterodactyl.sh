@@ -71,7 +71,12 @@ installPanel() {
 
     apt -y install software-properties-common curl apt-transport-https ca-certificates gnupg
 
-    LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
+    if [ -f /etc/lsb-release ]; then
+        LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
+    elif [ -f /etc/debian_version ]; then
+        curl -o /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
+        echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/php.list
+    fi
 
     curl -fsSL https://packages.redis.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
     echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list
@@ -111,6 +116,7 @@ installPanel() {
     systemctl restart mariadb
 
     mv .env.example .env
+    
     COMPOSER_ALLOW_SUPERUSER=1
     composer install --no-dev --optimize-autoloader
     php artisan key:generate --force
@@ -155,6 +161,8 @@ installPanel() {
     --name-last="$user_username" \
     --password="$user_password" \
     --admin=1
+
+    echo "TRUSTED_PROXIES=173.245.48.0/20,103.21.244.0/22,103.22.200.0/22,103.31.4.0/22,141.101.64.0/18,108.162.192.0/18,190.93.240.0/20,188.114.96.0/20,197.234.240.0/22,198.41.128.0/17,162.158.0.0/15,104.16.0.0/13,104.24.0.0/14,172.64.0.0/13,131.0.72.0/22" >> .env
 
     chown -R www-data:www-data /var/www/pterodactyl/*
 
@@ -236,21 +244,38 @@ installWings() {
 updatePanel() {
     cd /var/www/pterodactyl
     php artisan down
+
     curl -L https://github.com/pterodactyl/panel/releases/latest/download/panel.tar.gz | tar -xzv
+
+    rm panel.tar.gz
+
     chmod -R 755 storage/* bootstrap/cache
+
     composer install --no-dev --optimize-autoloader
+
     php artisan optimize:clear
     php artisan migrate --seed --force
+
     chown -R www-data:www-data /var/www/pterodactyl/*
+
     php artisan queue:restart
+
     php artisan up
+
     cd
 }
 
 installPanelAndwings() {
     cd
     apt -y install software-properties-common curl apt-transport-https ca-certificates gnupg
-    LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
+    
+    if [ -f /etc/lsb-release ]; then
+        LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
+    elif [ -f /etc/debian_version ]; then
+        curl -o /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
+        echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/php.list
+    fi
+
     add-apt-repository ppa:redislabs/redis -y
     rm /etc/apt/sources.list.d/mariadb.list
     rm /etc/apt/sources.list.d/mariadb.list.old_1
@@ -285,7 +310,9 @@ installPanelAndwings() {
     curl -o /etc/mysql/mariadb.conf.d/50-server.cnf $GitHub_Account/50-server.cnf
     systemctl restart mysql
     systemctl restart mariadb
+
     mv .env.example .env
+    
     COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --optimize-autoloader
     php artisan key:generate --force
         
@@ -337,6 +364,8 @@ installPanelAndwings() {
     --name-last="$user_username" \
     --password="$user_password" \
     --admin=1
+
+    echo "TRUSTED_PROXIES=173.245.48.0/20,103.21.244.0/22,103.22.200.0/22,103.31.4.0/22,141.101.64.0/18,108.162.192.0/18,190.93.240.0/20,188.114.96.0/20,197.234.240.0/22,198.41.128.0/17,162.158.0.0/15,104.16.0.0/13,104.24.0.0/14,172.64.0.0/13,131.0.72.0/22" >> .env
 
     chown -R www-data:www-data /var/www/pterodactyl/*
 

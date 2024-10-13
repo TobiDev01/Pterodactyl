@@ -25,3 +25,14 @@ Options:
 
 [8] Uninstall phpMyAdmin
 ```
+
+Create SSL certificates with Certbot
+```sh
+apt update
+
+apt install -y certbot
+
+apt install -y python3-certbot-nginx
+
+certbot certonly --nginx --redirect --no-eff-email --register-unsafely-without-email -d domain.com
+```
