@@ -17,7 +17,7 @@ Options:
 
 [4] Update panel
 
-[5] uninstall panel & wings
+[5] Uninstall panel & wings
 
 [6] Install theme
 
@@ -27,7 +27,7 @@ Options:
 ```
 
 Create SSL certificates with Certbot
-```sh
+```js
 apt update
 
 apt install -y certbot
