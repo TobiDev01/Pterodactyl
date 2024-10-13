@@ -78,7 +78,7 @@ installPanel() {
     
     apt update
 
-    apt -y install php8.1 php8.1-{cli,gd,mysql,pdo,mbstring,tokenizer,bcmath,xml,fpm,curl,zip} mariadb-server nginx tar unzip git redis-server
+    apt -y install php8.3 php8.3-{cli,gd,mysql,pdo,mbstring,tokenizer,bcmath,xml,fpm,curl,zip} mariadb-server nginx tar unzip git redis-server
     
     curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
 
@@ -110,7 +110,7 @@ installPanel() {
     systemctl restart mysql
     systemctl restart mariadb
 
-    cp .env.example .env
+    mv .env.example .env
     COMPOSER_ALLOW_SUPERUSER=1
     composer install --no-dev --optimize-autoloader
     php artisan key:generate --force
@@ -137,7 +137,7 @@ installPanel() {
     --redis-pass="null" \
     --redis-port="6379" \
     --settings-ui=true \
-    --telemetry=true
+    --telemetry=false
 
     php artisan p:environment:database \
     --host="127.0.0.1" \
@@ -261,7 +261,7 @@ installPanelAndwings() {
     curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
     apt update
     
-    apt -y install php8.1 php8.1-{cli,gd,mysql,pdo,mbstring,tokenizer,bcmath,xml,fpm,curl,zip} mariadb-server nginx tar unzip git redis-server
+    apt -y install php8.3 php8.3-{cli,gd,mysql,pdo,mbstring,tokenizer,bcmath,xml,fpm,curl,zip} mariadb-server nginx tar unzip git redis-server
     curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
     mkdir -p /var/www/pterodactyl
     cd /var/www/pterodactyl
@@ -285,7 +285,7 @@ installPanelAndwings() {
     curl -o /etc/mysql/mariadb.conf.d/50-server.cnf $GitHub_Account/50-server.cnf
     systemctl restart mysql
     systemctl restart mariadb
-    cp .env.example .env
+    mv .env.example .env
     COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --optimize-autoloader
     php artisan key:generate --force
         
@@ -319,7 +319,7 @@ installPanelAndwings() {
     --redis-pass="null" \
     --redis-port="6379" \
     --settings-ui=true \
-    --telemetry=true
+    --telemetry=false
 
     php artisan p:environment:database \
     --host="127.0.0.1" \
