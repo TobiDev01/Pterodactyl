@@ -26,6 +26,7 @@ Options:
 [8] Uninstall phpMyAdmin
 ```
 
+
 Create SSL certificates with Certbot
 ```yml
 apt update
