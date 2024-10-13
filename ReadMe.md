@@ -27,7 +27,7 @@ Options:
 ```
 
 Create SSL certificates with Certbot
-```js
+```yml
 apt update
 
 apt install -y certbot
