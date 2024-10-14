@@ -109,8 +109,11 @@ installPanel() {
     mariadb -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'pterodactyluser'@'%' WITH GRANT OPTION;"
     mariadb -u root -e "flush privileges;"
 
-    curl -o /etc/mysql/my.cnf $GitHub_Account/my.cnf
-    curl -o /etc/mysql/mariadb.conf.d/50-server.cnf $GitHub_Account/50-server.cnf
+    #curl -o /etc/mysql/my.cnf $GitHub_Account/my.cnf
+    #curl -o /etc/mysql/mariadb.conf.d/50-server.cnf $GitHub_Account/50-server.cnf
+
+    sed -i '$a\\n[mysqld]\nbind-address=0.0.0.0' "/etc/mysql/my.cnf"
+    sed -i "s@127.0.0.1@0.0.0.0@g" /etc/mysql/mariadb.conf.d/50-server.cnf
 
     systemctl restart mysql
     systemctl restart mariadb
@@ -217,8 +220,11 @@ installWings() {
     mariadb -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'pterodactyluser'@'%' WITH GRANT OPTION;"
     mariadb -u root -e "flush privileges;"
 
-    curl -o /etc/mysql/my.cnf $GitHub_Account/my.cnf
-    curl -o /etc/mysql/mariadb.conf.d/50-server.cnf $GitHub_Account/50-server.cnf
+    #curl -o /etc/mysql/my.cnf $GitHub_Account/my.cnf
+    #curl -o /etc/mysql/mariadb.conf.d/50-server.cnf $GitHub_Account/50-server.cnf
+
+    sed -i '$a\\n[mysqld]\nbind-address=0.0.0.0' "/etc/mysql/my.cnf"
+    sed -i "s@127.0.0.1@0.0.0.0@g" /etc/mysql/mariadb.conf.d/50-server.cnf
     
     systemctl restart mysql
     systemctl restart mariadb
@@ -305,9 +311,14 @@ installPanelAndwings() {
     mariadb -u root -e "flush privileges;"
 
     rm /etc/mysql/my.cnf
-    curl -o /etc/mysql/my.cnf $GitHub_Account/my.cnf
     rm /etc/mysql/mariadb.conf.d/50-server.cnf
-    curl -o /etc/mysql/mariadb.conf.d/50-server.cnf $GitHub_Account/50-server.cnf
+
+    #curl -o /etc/mysql/my.cnf $GitHub_Account/my.cnf
+    #curl -o /etc/mysql/mariadb.conf.d/50-server.cnf $GitHub_Account/50-server.cnf
+
+    sed -i '$a\\n[mysqld]\nbind-address=0.0.0.0' "/etc/mysql/my.cnf"
+    sed -i "s@127.0.0.1@0.0.0.0@g" /etc/mysql/mariadb.conf.d/50-server.cnf
+
     systemctl restart mysql
     systemctl restart mariadb
 
