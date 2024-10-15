@@ -310,8 +310,8 @@ installPanelAndwings() {
     mariadb -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'pterodactyluser'@'%' WITH GRANT OPTION;"
     mariadb -u root -e "flush privileges;"
 
-    rm /etc/mysql/my.cnf
-    rm /etc/mysql/mariadb.conf.d/50-server.cnf
+    #rm /etc/mysql/my.cnf
+    #rm /etc/mysql/mariadb.conf.d/50-server.cnf
 
     #curl -o /etc/mysql/my.cnf $GitHub_Account/my.cnf
     #curl -o /etc/mysql/mariadb.conf.d/50-server.cnf $GitHub_Account/50-server.cnf
